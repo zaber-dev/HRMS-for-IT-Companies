@@ -30,22 +30,27 @@ class LeaveApprovalService
     /**
      * Determine whether the approval action is a bypass.
      *
-     * Returns true when Admin or SuperAdmin acts on an Employee request
-     * that is NOT in pending_admin status.
+     * For Admin: true when acting on an Employee request not in pending_admin (Admin's normal stage).
+     * For SuperAdmin: true when acting on an Employee request in pending_hr or pending_admin
+     *                 (both are bypass stages for SuperAdmin, whose normal stage is pending_super_admin).
      */
     public function isBypass(User $approver, LeaveRequest $request): bool
     {
-        if (! ($approver->hasRole('admin') || $approver->hasRole('super_admin'))) {
-            return false;
-        }
-
         $submitter = $request->user;
 
         if (! $submitter->hasRole('employee')) {
             return false;
         }
 
-        return $request->status !== LeaveStatus::PendingAdmin;
+        if ($approver->hasRole('super_admin')) {
+            return in_array($request->status, [LeaveStatus::PendingHr, LeaveStatus::PendingAdmin]);
+        }
+
+        if ($approver->hasRole('admin')) {
+            return $request->status !== LeaveStatus::PendingAdmin;
+        }
+
+        return false;
     }
 
     /**
