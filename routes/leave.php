@@ -18,7 +18,9 @@ Route::prefix('leave-requests')
 
         // Approval queue — MUST be before /{leaveRequest} to avoid wildcard capture
         Route::get('/approvals', [ApprovalController::class, 'index'])->name('approvals.index');
+        Route::get('/approvals/{leaveRequest}/approve', [ApprovalController::class, 'approve'])->name('approvals.approve.show');
         Route::post('/approvals/{leaveRequest}/approve', [ApprovalController::class, 'approve'])->name('approvals.approve');
+        Route::get('/approvals/{leaveRequest}/reject', [ApprovalController::class, 'reject'])->name('approvals.reject.show');
         Route::post('/approvals/{leaveRequest}/reject', [ApprovalController::class, 'reject'])->name('approvals.reject');
 
         // All requests (Admin/Super Admin) — MUST be before /{leaveRequest} to avoid wildcard capture
