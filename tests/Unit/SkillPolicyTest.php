@@ -235,7 +235,7 @@ describe('SkillAssignmentPolicy::delete()', function () {
             'source' => AssignmentSource::Self,
         ]);
 
-        expect($this->assignmentPolicy->delete($user, $user, $assignment))->toBeTrue();
+        expect($this->assignmentPolicy->delete($user, $assignment, $user))->toBeTrue();
     });
 
     it('returns false when actor is the target but assignment source is privileged', function () {
@@ -245,7 +245,7 @@ describe('SkillAssignmentPolicy::delete()', function () {
             'source' => AssignmentSource::Privileged,
         ]);
 
-        expect($this->assignmentPolicy->delete($user, $user, $assignment))->toBeFalse();
+        expect($this->assignmentPolicy->delete($user, $assignment, $user))->toBeFalse();
     });
 
     it('returns true when actor has a privileged role regardless of source', function (string $role) {
@@ -256,7 +256,7 @@ describe('SkillAssignmentPolicy::delete()', function () {
             'source' => AssignmentSource::Privileged,
         ]);
 
-        expect($this->assignmentPolicy->delete($actor, $target, $assignment))->toBeTrue();
+        expect($this->assignmentPolicy->delete($actor, $assignment, $target))->toBeTrue();
     })->with(['hr', 'admin', 'super_admin']);
 
     it('returns true when privileged actor removes a self-assigned skill from another user', function (string $role) {
@@ -267,7 +267,7 @@ describe('SkillAssignmentPolicy::delete()', function () {
             'source' => AssignmentSource::Self,
         ]);
 
-        expect($this->assignmentPolicy->delete($actor, $target, $assignment))->toBeTrue();
+        expect($this->assignmentPolicy->delete($actor, $assignment, $target))->toBeTrue();
     })->with(['hr', 'admin', 'super_admin']);
 
     it('returns false when employee tries to remove another user\'s self-assigned skill', function () {
@@ -278,7 +278,7 @@ describe('SkillAssignmentPolicy::delete()', function () {
             'source' => AssignmentSource::Self,
         ]);
 
-        expect($this->assignmentPolicy->delete($actor, $target, $assignment))->toBeFalse();
+        expect($this->assignmentPolicy->delete($actor, $assignment, $target))->toBeFalse();
     });
 
     it('returns false when employee tries to remove another user\'s privileged assignment', function () {
@@ -289,7 +289,7 @@ describe('SkillAssignmentPolicy::delete()', function () {
             'source' => AssignmentSource::Privileged,
         ]);
 
-        expect($this->assignmentPolicy->delete($actor, $target, $assignment))->toBeFalse();
+        expect($this->assignmentPolicy->delete($actor, $assignment, $target))->toBeFalse();
     });
 
     it('returns true when roleless user removes their own self-assigned skill (self-remove check passes)', function () {
@@ -301,6 +301,6 @@ describe('SkillAssignmentPolicy::delete()', function () {
             'source' => AssignmentSource::Self,
         ]);
 
-        expect($this->assignmentPolicy->delete($user, $user, $assignment))->toBeTrue();
+        expect($this->assignmentPolicy->delete($user, $assignment, $user))->toBeTrue();
     });
 });
