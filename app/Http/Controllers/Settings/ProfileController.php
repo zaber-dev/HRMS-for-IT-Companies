@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\Skill;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,9 +20,30 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user();
+
+        $assignedSkills = $user->skillAssignments()
+            ->with('skill.skillCategory')
+            ->orderBy('source')
+            ->get()
+            ->sortBy('skill.name')
+            ->values();
+
+        $assignedSkillIds = $assignedSkills->pluck('skill_id');
+
+        $availableSkills = Skill::with('skillCategory')
+            ->where('is_active', true)
+            ->whereNotIn('id', $assignedSkillIds)
+            ->get()
+            ->sortBy(fn ($skill) => $skill->skillCategory?->name.'|'.$skill->name)
+            ->values();
+
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'assignedSkills' => $assignedSkills,
+            'availableSkills' => $availableSkills,
+            'canManageSkills' => $user->hasRole(['super_admin', 'admin', 'hr']),
         ]);
     }
 
