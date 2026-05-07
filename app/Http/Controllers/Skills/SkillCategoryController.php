@@ -62,7 +62,7 @@ class SkillCategoryController extends Controller
      */
     public function edit(SkillCategory $skillCategory): Response
     {
-        $this->authorize('update', Skill::class);
+        $this->authorize('update', new Skill);
 
         return Inertia::render('skills/categories/edit', [
             'category' => $skillCategory,
@@ -75,7 +75,7 @@ class SkillCategoryController extends Controller
      */
     public function update(Request $request, SkillCategory $skillCategory): RedirectResponse
     {
-        $this->authorize('update', Skill::class);
+        $this->authorize('update', new Skill);
 
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:100', "unique:skill_categories,name,{$skillCategory->id}"],
