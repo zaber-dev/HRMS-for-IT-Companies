@@ -1,11 +1,12 @@
 import { usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
-import { BookOpen, CalendarDays, ClipboardCheck, ClipboardList, FolderGit2, LayoutGrid, List, Shield, Users } from 'lucide-react';
+import { BookOpen, CalendarDays, ClipboardCheck, ClipboardList, FolderGit2, LayoutGrid, List, Shield, Tag, Users } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavAdmin } from '@/components/nav-admin';
 import { NavFooter } from '@/components/nav-footer';
 import { NavLeave } from '@/components/nav-leave';
 import { NavMain } from '@/components/nav-main';
+import { NavSkills } from '@/components/nav-skills';
 import { NavUser } from '@/components/nav-user';
 import {
     Sidebar,
@@ -19,6 +20,8 @@ import {
 import { index as usersIndex } from '@/actions/App/Http/Controllers/Admin/UserController';
 import { index as rolesIndex } from '@/actions/App/Http/Controllers/Admin/RoleController';
 import { index as auditLogsIndex } from '@/actions/App/Http/Controllers/Admin/AuditLogController';
+import { index as skillsIndex } from '@/actions/App/Http/Controllers/Skills/SkillController';
+import { index as skillCategoriesIndex } from '@/actions/App/Http/Controllers/Skills/SkillCategoryController';
 import { dashboard } from '@/routes';
 import type { Auth, NavItem } from '@/types';
 
@@ -69,6 +72,13 @@ export function AppSidebar() {
             : []),
     ];
 
+    const skillsNavItems: NavItem[] = [
+        { title: 'Skills', href: skillsIndex().url, icon: Tag },
+        ...(role === 'hr' || role === 'admin' || role === 'super_admin'
+            ? [{ title: 'Categories', href: skillCategoriesIndex().url, icon: List }]
+            : []),
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -86,6 +96,7 @@ export function AppSidebar() {
             <SidebarContent>
                 <NavMain items={mainNavItems} />
                 <NavLeave items={leaveNavItems} />
+                <NavSkills items={skillsNavItems} />
                 <NavAdmin items={adminNavItems} />
             </SidebarContent>
 
