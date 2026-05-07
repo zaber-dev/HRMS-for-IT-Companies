@@ -52,6 +52,10 @@ class SkillAssignmentController extends Controller
      */
     public function destroy(User $user, Skill $skill): RedirectResponse
     {
+        // Perform an early access check before attempting to find the assignment,
+        // so that users without any permission receive 403 rather than 404.
+        Gate::authorize('create', [SkillAssignment::class, $user]);
+
         $assignment = SkillAssignment::where('user_id', $user->id)
             ->where('skill_id', $skill->id)
             ->firstOrFail();
