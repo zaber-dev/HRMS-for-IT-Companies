@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\AuditLog;
 use App\Models\LeaveRequest;
 use App\Policies\AuditLogPolicy;
+use App\Policies\DashboardPolicy;
 use App\Policies\LeaveRequestPolicy;
 use App\Policies\RolePolicy;
 use Carbon\CarbonImmutable;
@@ -42,6 +43,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(AuditLog::class, AuditLogPolicy::class);
         Gate::policy(LeaveRequest::class, LeaveRequestPolicy::class);
+
+        Gate::define('viewHr', [DashboardPolicy::class, 'viewHr']);
+        Gate::define('viewEmployee', [DashboardPolicy::class, 'viewEmployee']);
     }
 
     /**
