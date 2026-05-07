@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -47,4 +48,15 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * Create an active user with the given role.
+ */
+function skillUser(string $role): User
+{
+    return User::factory()->create([
+        'is_active' => true,
+        'must_change_password' => false,
+    ])->assignRole($role);
 }

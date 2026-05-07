@@ -3,27 +3,11 @@
 use App\Models\Skill;
 use App\Models\SkillAssignment;
 use App\Models\SkillCategory;
-use App\Models\User;
 use Database\Seeders\RoleAndPermissionSeeder;
 
 beforeEach(function () {
     $this->seed(RoleAndPermissionSeeder::class);
 });
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Create an active user with the given role.
- */
-function skillUser(string $role): User
-{
-    return User::factory()->create([
-        'is_active' => true,
-        'must_change_password' => false,
-    ])->assignRole($role);
-}
 
 // ---------------------------------------------------------------------------
 // Happy paths — CRUD
