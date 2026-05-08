@@ -21,7 +21,7 @@ class AuditLogController extends Controller
         $auditLogs = AuditLog::with('user')->orderByDesc('created_at')->paginate(20);
 
         return Inertia::render('admin/audit-logs/index', [
-            'auditLogs' => $auditLogs,
+            'logs' => $auditLogs,
         ]);
     }
 }
