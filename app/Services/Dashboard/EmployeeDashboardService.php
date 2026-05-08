@@ -43,7 +43,7 @@ class EmployeeDashboardService
         return [
             'name' => $employee->name,
             'role' => $role,
-            'bench_status' => $employee->bench_status->value,
+            'bench_status' => $employee->bench_status?->value ?? 'on_bench',
             'skills_count' => $skillsCount,
             'created_at' => $employee->created_at->toDateString(),
         ];
