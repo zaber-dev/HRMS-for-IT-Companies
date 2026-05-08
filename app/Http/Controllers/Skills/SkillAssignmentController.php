@@ -43,6 +43,11 @@ class SkillAssignmentController extends Controller
             'source' => $source,
         ]);
 
+        // Redirect back to the user's edit page if called from admin context, otherwise own profile
+        if (auth()->id() !== $user->id) {
+            return to_route('admin.users.edit', $user)->with('success', 'Skill assigned successfully.');
+        }
+
         return to_route('profile.edit')->with('success', 'Skill assigned successfully.');
     }
 
@@ -63,6 +68,11 @@ class SkillAssignmentController extends Controller
         $this->authorize('delete', [$assignment, $user]);
 
         $assignment->delete();
+
+        // Redirect back to the user's edit page if called from admin context, otherwise own profile
+        if (auth()->id() !== $user->id) {
+            return to_route('admin.users.edit', $user)->with('success', 'Skill removed successfully.');
+        }
 
         return to_route('profile.edit')->with('success', 'Skill removed successfully.');
     }

@@ -32,6 +32,7 @@ class SecurityController extends Controller implements HasMiddleware
     {
         $props = [
             'canManageTwoFactor' => Features::canManageTwoFactorAuthentication(),
+            'mustChangePassword' => (bool) $request->user()->must_change_password,
         ];
 
         if (Features::canManageTwoFactorAuthentication()) {
@@ -49,11 +50,19 @@ class SecurityController extends Controller implements HasMiddleware
      */
     public function update(PasswordUpdateRequest $request): RedirectResponse
     {
+        $wasForcedChange = $request->user()->must_change_password;
+
         $request->user()->update([
             'password' => $request->password,
+            'must_change_password' => false,
         ]);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Password updated.')]);
+
+        // If this was a forced password change, redirect to dashboard now that it's cleared
+        if ($wasForcedChange) {
+            return to_route('dashboard');
+        }
 
         return back();
     }

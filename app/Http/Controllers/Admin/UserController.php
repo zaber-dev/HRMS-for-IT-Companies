@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Skill;
 use App\Models\User;
 use App\Services\AuditLogger;
 use App\Support\RoleHierarchy;
@@ -106,9 +107,27 @@ class UserController extends Controller
 
         $roles = $this->availableRoles($request->user());
 
+        $assignedSkills = $user->skillAssignments()
+            ->with('skill.skillCategory')
+            ->orderBy('source')
+            ->get()
+            ->sortBy('skill.name')
+            ->values();
+
+        $assignedSkillIds = $assignedSkills->pluck('skill_id');
+
+        $availableSkills = Skill::with('skillCategory')
+            ->where('is_active', true)
+            ->whereNotIn('id', $assignedSkillIds)
+            ->get()
+            ->sortBy(fn ($skill) => $skill->skillCategory?->name.'|'.$skill->name)
+            ->values();
+
         return Inertia::render('admin/users/edit', [
             'user' => $user->load('roles'),
             'roles' => $roles,
+            'assignedSkills' => $assignedSkills,
+            'availableSkills' => $availableSkills,
         ]);
     }
 

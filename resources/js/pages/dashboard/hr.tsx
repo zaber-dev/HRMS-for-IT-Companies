@@ -52,19 +52,19 @@ export default function HrDashboard({
                 {/* Deferred panels */}
                 <Deferred data="ptoAlerts" fallback={<PtoAlertPanelSkeleton />}>
                     {(ptoAlerts: DashboardProps['ptoAlerts']) => (
-                        <PtoAlertPanel alerts={ptoAlerts ?? []} threshold={14} />
+                        <PtoAlertPanel alerts={Array.isArray(ptoAlerts) ? ptoAlerts : []} threshold={14} />
                     )}
                 </Deferred>
 
                 <Deferred data="deadlineAlerts" fallback={<DeadlineAlertPanelSkeleton />}>
                     {(deadlineAlerts: DashboardProps['deadlineAlerts']) => (
-                        <DeadlineAlertPanel alerts={deadlineAlerts ?? []} />
+                        <DeadlineAlertPanel alerts={Array.isArray(deadlineAlerts) ? deadlineAlerts : []} />
                     )}
                 </Deferred>
 
                 <Deferred data="skillCoverageProjects" fallback={<SkillCoveragePanelSkeleton />}>
                     {(skillCoverageProjects: DashboardProps['skillCoverageProjects']) => (
-                        <SkillCoveragePanel projects={skillCoverageProjects ?? []} />
+                        <SkillCoveragePanel projects={Array.isArray(skillCoverageProjects) ? skillCoverageProjects : []} />
                     )}
                 </Deferred>
             </div>

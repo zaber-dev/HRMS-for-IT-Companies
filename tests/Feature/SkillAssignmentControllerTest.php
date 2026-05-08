@@ -36,7 +36,7 @@ describe('store (happy path)', function () {
 
         $this->actingAs($hr)
             ->post(route('users.skills.store', $employee), ['skill_id' => $skill->id])
-            ->assertRedirect(route('profile.edit'));
+            ->assertRedirect(route('admin.users.edit', $employee));
 
         $this->assertDatabaseHas('skill_assignments', [
             'user_id' => $employee->id,
@@ -81,7 +81,7 @@ describe('destroy (happy path)', function () {
 
         $this->actingAs($hr)
             ->delete(route('users.skills.destroy', [$employee, $skill]))
-            ->assertRedirect(route('profile.edit'));
+            ->assertRedirect(route('admin.users.edit', $employee));
 
         $this->assertDatabaseMissing('skill_assignments', [
             'user_id' => $employee->id,
