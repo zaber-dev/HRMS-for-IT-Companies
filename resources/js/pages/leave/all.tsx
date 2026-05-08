@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { index as allIndex } from '@/actions/App/Http/Controllers/Leave/AllLeaveRequestsController';
 import { index as leaveIndex } from '@/actions/App/Http/Controllers/Leave/LeaveRequestController';
 import Heading from '@/components/heading';
@@ -7,6 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type {
     LeaveRequest,
     LeaveStatus,
@@ -14,6 +21,12 @@ import type {
     Role,
     User,
 } from '@/types';
+
+const roleOptions = [
+    { value: 'employee', label: 'Employee' },
+    { value: 'hr', label: 'HR' },
+    { value: 'admin', label: 'Admin' },
+];
 
 function statusBadgeClass(status: LeaveStatus): string {
     const map: Record<LeaveStatus, string> = {
@@ -60,19 +73,18 @@ export default function AllLeaveRequests({
     statuses,
 }: Props) {
     const formRef = useRef<HTMLFormElement>(null);
+    const [status, setStatus] = useState(filters.status ?? '');
+    const [role, setRole] = useState(filters.role ?? '');
+    const [startDate, setStartDate] = useState(filters.start_date ?? '');
+    const [endDate, setEndDate] = useState(filters.end_date ?? '');
 
     function handleFilterChange() {
-        if (!formRef.current) {
-            return;
-        }
-
-        const data = new FormData(formRef.current);
         const params: Record<string, string> = {};
-        data.forEach((value, key) => {
-            if (value) {
-                params[key] = value.toString();
-            }
-        });
+        if (status) params.status = status;
+        if (role) params.role = role;
+        if (startDate) params.start_date = startDate;
+        if (endDate) params.end_date = endDate;
+
         router.get(allIndex.url(), params, {
             preserveState: true,
             replace: true,
@@ -80,6 +92,10 @@ export default function AllLeaveRequests({
     }
 
     function handleReset() {
+        setStatus('');
+        setRole('');
+        setStartDate('');
+        setEndDate('');
         router.get(allIndex.url(), {}, { preserveState: false, replace: true });
     }
 
@@ -104,50 +120,43 @@ export default function AllLeaveRequests({
                 >
                     <div className="grid gap-1.5">
                         <Label htmlFor="filter-status">Status</Label>
-                        <select
-                            id="filter-status"
-                            name="status"
-                            defaultValue={filters.status ?? ''}
-                            onChange={handleFilterChange}
-                            className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                        >
-                            <option value="">All statuses</option>
-                            {statuses.map((s) => (
-                                <option key={s} value={s}>
-                                    {s
-                                        .replace(/_/g, ' ')
-                                        .replace(/\b\w/g, (c) =>
-                                            c.toUpperCase(),
-                                        )}
-                                </option>
-                            ))}
-                        </select>
+                        <Select value={status || undefined} onValueChange={(value) => { setStatus(value === status ? '' : value); }}>
+                            <SelectTrigger id="filter-status" className="w-48">
+                                <SelectValue placeholder="All statuses" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {statuses.map((s) => (
+                                    <SelectItem key={s} value={s}>
+                                        {s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     <div className="grid gap-1.5">
                         <Label htmlFor="filter-role">Submitter Role</Label>
-                        <select
-                            id="filter-role"
-                            name="role"
-                            defaultValue={filters.role ?? ''}
-                            onChange={handleFilterChange}
-                            className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                        >
-                            <option value="">All roles</option>
-                            <option value="employee">Employee</option>
-                            <option value="hr">HR</option>
-                            <option value="admin">Admin</option>
-                        </select>
+                        <Select value={role || undefined} onValueChange={(value) => { setRole(value === role ? '' : value); }}>
+                            <SelectTrigger id="filter-role" className="w-40">
+                                <SelectValue placeholder="All roles" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {roleOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     <div className="grid gap-1.5">
                         <Label htmlFor="filter-start-date">From Date</Label>
                         <Input
                             id="filter-start-date"
-                            name="start_date"
                             type="date"
-                            defaultValue={filters.start_date ?? ''}
-                            onChange={handleFilterChange}
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
                             className="h-9"
                         />
                     </div>
@@ -156,20 +165,21 @@ export default function AllLeaveRequests({
                         <Label htmlFor="filter-end-date">To Date</Label>
                         <Input
                             id="filter-end-date"
-                            name="end_date"
                             type="date"
-                            defaultValue={filters.end_date ?? ''}
-                            onChange={handleFilterChange}
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
                             className="h-9"
                         />
                     </div>
+
+                    <Button type="submit">Apply Filters</Button>
 
                     <Button
                         type="button"
                         variant="outline"
                         onClick={handleReset}
                     >
-                        Reset Filters
+                        Reset
                     </Button>
                 </form>
 

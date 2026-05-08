@@ -9,8 +9,20 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    FormSelect,
+    SelectItem,
+} from '@/components/ui/form-select';
 import type { Project } from '@/types/projects';
 import type { Skill } from '@/types/skills';
+
+const statusOptions = [
+    { value: 'planning', label: 'Planning' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'on_hold', label: 'On Hold' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'cancelled', label: 'Cancelled' },
+];
 
 type Props = {
     project: Project & { skills: Skill[] };
@@ -31,7 +43,7 @@ export default function ProjectEdit({ project, skills }: Props) {
                 />
 
                 <Form
-                    {...update(project).form()}
+                    {...update.form(project)}
                     className="max-w-lg space-y-6"
                 >
                     {({ errors, processing }) => (
@@ -87,20 +99,19 @@ export default function ProjectEdit({ project, skills }: Props) {
 
                             <div className="grid gap-2">
                                 <Label htmlFor="status">Status</Label>
-                                <select
+                                <FormSelect
                                     id="status"
                                     name="status"
                                     defaultValue={project.status}
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+                                    placeholder="Select a status"
+                                    className="w-full"
                                 >
-                                    <option value="planning">Planning</option>
-                                    <option value="in_progress">
-                                        In Progress
-                                    </option>
-                                    <option value="on_hold">On Hold</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="cancelled">Cancelled</option>
-                                </select>
+                                    {statusOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </FormSelect>
                                 <InputError message={errors.status} />
                             </div>
 

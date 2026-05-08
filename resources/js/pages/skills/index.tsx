@@ -1,4 +1,5 @@
 import { Form, Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import {
     index,
     create,
@@ -10,6 +11,13 @@ import {
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { PaginatedData, Skill, SkillCategory } from '@/types';
 
 type Props = {
@@ -19,29 +27,42 @@ type Props = {
     canManageSkills: boolean;
 };
 
+const activeOptions = [
+    { value: 'all', label: 'All' },
+    { value: '1', label: 'Active' },
+    { value: '0', label: 'Inactive' },
+];
+
 export default function SkillsIndex({
     skills,
     categories,
     filters,
     canManageSkills,
 }: Props) {
-    function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const [category, setCategory] = useState<string>(filters.category ? String(filters.category) : '');
+    const [isActive, setIsActive] = useState<string>(filters.is_active ?? '');
+
+    function handleCategoryChange(value: string) {
+        setCategory(value);
         router.get(
             index.url(),
             {
-                category: e.target.value || undefined,
-                is_active: filters.is_active || undefined,
+                category: value || undefined,
+                is_active: isActive || undefined,
             },
             { preserveState: true, replace: true },
         );
     }
 
-    function handleActiveChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    function handleActiveChange(value: string) {
+        // Treat 'all' as clearing the filter
+        const newValue = value === 'all' ? '' : value;
+        setIsActive(newValue);
         router.get(
             index.url(),
             {
-                category: filters.category || undefined,
-                is_active: e.target.value || undefined,
+                category: category || undefined,
+                is_active: newValue || undefined,
             },
             { preserveState: true, replace: true },
         );
@@ -66,44 +87,39 @@ export default function SkillsIndex({
 
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                        <label
-                            htmlFor="category-filter"
-                            className="text-sm font-medium text-muted-foreground"
-                        >
+                        <span className="text-sm font-medium text-muted-foreground">
                             Category:
-                        </label>
-                        <select
-                            id="category-filter"
-                            value={filters.category ?? ''}
-                            onChange={handleCategoryChange}
-                            className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                        >
-                            <option value="">All categories</option>
-                            {categories.map((cat) => (
-                                <option key={cat.id} value={cat.id}>
-                                    {cat.name}
-                                </option>
-                            ))}
-                        </select>
+                        </span>
+                        <Select value={category} onValueChange={handleCategoryChange}>
+                            <SelectTrigger className="w-48">
+                                <SelectValue placeholder="All categories" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((cat) => (
+                                    <SelectItem key={cat.id} value={String(cat.id)}>
+                                        {cat.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <label
-                            htmlFor="active-filter"
-                            className="text-sm font-medium text-muted-foreground"
-                        >
+                        <span className="text-sm font-medium text-muted-foreground">
                             Status:
-                        </label>
-                        <select
-                            id="active-filter"
-                            value={filters.is_active ?? ''}
-                            onChange={handleActiveChange}
-                            className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                        >
-                            <option value="">All</option>
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
+                        </span>
+                        <Select value={isActive || undefined} onValueChange={handleActiveChange}>
+                            <SelectTrigger className="w-32">
+                                <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {activeOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
 

@@ -9,6 +9,10 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    FormSelect,
+    SelectItem,
+} from '@/components/ui/form-select';
 import type { SkillCategory } from '@/types';
 
 type Props = {
@@ -45,22 +49,20 @@ export default function SkillCreate({ categories }: Props) {
                                 <Label htmlFor="skill_category_id">
                                     Category
                                 </Label>
-                                <select
+                                <FormSelect
                                     id="skill_category_id"
                                     name="skill_category_id"
+                                    placeholder="Select a category"
+                                    className="w-full"
                                     required
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                 >
-                                    <option value="">Select a category</option>
                                     {categories.map((cat) => (
-                                        <option key={cat.id} value={cat.id}>
+                                        <SelectItem key={cat.id} value={String(cat.id)}>
                                             {cat.name}
-                                        </option>
+                                        </SelectItem>
                                     ))}
-                                </select>
-                                <InputError
-                                    message={errors.skill_category_id}
-                                />
+                                </FormSelect>
+                                <InputError message={errors.skill_category_id} />
                             </div>
 
                             <div className="grid gap-2">

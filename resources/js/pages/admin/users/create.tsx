@@ -9,6 +9,10 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    FormSelect,
+    SelectItem,
+} from '@/components/ui/form-select';
 import type { Role } from '@/types/auth';
 
 type Props = {
@@ -57,19 +61,19 @@ export default function UsersCreate({ roles }: Props) {
 
                             <div className="grid gap-2">
                                 <Label htmlFor="role">Role</Label>
-                                <select
+                                <FormSelect
                                     id="role"
                                     name="role"
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+                                    placeholder="Select a role"
+                                    className="w-full"
                                     required
                                 >
-                                    <option value="">Select a role</option>
                                     {roles.map((role) => (
-                                        <option key={role.id} value={role.name}>
+                                        <SelectItem key={role.id} value={role.name}>
                                             {role.name}
-                                        </option>
+                                        </SelectItem>
                                     ))}
-                                </select>
+                                </FormSelect>
                                 <InputError message={errors.role} />
                             </div>
 

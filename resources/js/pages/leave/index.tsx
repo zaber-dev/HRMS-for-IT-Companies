@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import {
     index as leaveIndex,
     create,
@@ -7,7 +8,24 @@ import {
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { LeaveRequest, LeaveStatus, PaginatedData } from '@/types';
+
+const statusOptions = [
+    { value: 'all', label: 'All statuses' },
+    { value: 'pending_hr', label: 'Pending HR' },
+    { value: 'pending_admin', label: 'Pending Admin' },
+    { value: 'pending_super_admin', label: 'Pending Super Admin' },
+    { value: 'approved', label: 'Approved' },
+    { value: 'rejected', label: 'Rejected' },
+    { value: 'cancelled', label: 'Cancelled' },
+];
 
 const TERMINAL_STATUSES: LeaveStatus[] = ['approved', 'rejected', 'cancelled'];
 
@@ -45,10 +63,15 @@ export default function LeaveRequestIndex({
     filters,
     canCreate,
 }: Props) {
-    function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const [status, setStatus] = useState(filters.status ?? '');
+
+    function handleStatusChange(value: string) {
+        // Treat 'all' as clearing the filter
+        const newStatus = value === 'all' ? '' : value;
+        setStatus(newStatus);
         router.get(
             leaveIndex.url(),
-            { status: e.target.value || undefined },
+            { status: newStatus || undefined },
             { preserveState: true, replace: true },
         );
     }
@@ -71,28 +94,21 @@ export default function LeaveRequestIndex({
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <label
-                        htmlFor="status-filter"
-                        className="text-sm font-medium text-muted-foreground"
-                    >
+                    <span className="text-sm font-medium text-muted-foreground">
                         Filter by status:
-                    </label>
-                    <select
-                        id="status-filter"
-                        value={filters.status ?? ''}
-                        onChange={handleStatusChange}
-                        className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                    >
-                        <option value="">All statuses</option>
-                        <option value="pending_hr">Pending HR</option>
-                        <option value="pending_admin">Pending Admin</option>
-                        <option value="pending_super_admin">
-                            Pending Super Admin
-                        </option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
+                    </span>
+                    <Select value={status || undefined} onValueChange={handleStatusChange}>
+                        <SelectTrigger className="w-56">
+                            <SelectValue placeholder="All statuses" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {statusOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="overflow-hidden rounded-lg border border-border">

@@ -14,6 +14,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    FormSelect,
+    SelectItem,
+} from '@/components/ui/form-select';
 import type { Role, User } from '@/types/auth';
 import type { Skill, SkillAssignment, SkillCategory } from '@/types/skills';
 
@@ -83,23 +87,20 @@ export default function UsersEdit({
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="role">Role</Label>
-                                    <select
+                                    <FormSelect
                                         id="role"
                                         name="role"
                                         defaultValue={currentRole}
-                                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+                                        placeholder="Select a role"
+                                        className="w-full"
                                         required
                                     >
-                                        <option value="">Select a role</option>
                                         {roles.map((role) => (
-                                            <option
-                                                key={role.id}
-                                                value={role.name}
-                                            >
+                                            <SelectItem key={role.id} value={role.name}>
                                                 {role.name}
-                                            </option>
+                                            </SelectItem>
                                         ))}
-                                    </select>
+                                    </FormSelect>
                                     <InputError message={errors.role} />
                                 </div>
 
@@ -193,33 +194,18 @@ export default function UsersEdit({
                                 {({ errors, processing }) => (
                                     <>
                                         <div className="grid gap-1">
-                                            <select
+                                            <FormSelect
                                                 name="skill_id"
-                                                className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+                                                placeholder="Select a skill"
+                                                className="w-64"
                                             >
-                                                <option value="">
-                                                    Select a skill
-                                                </option>
-                                                {availableSkills.map(
-                                                    (skill) => (
-                                                        <option
-                                                            key={skill.id}
-                                                            value={skill.id}
-                                                        >
-                                                            {skill.name} (
-                                                            {
-                                                                skill
-                                                                    .skill_category
-                                                                    .name
-                                                            }
-                                                            )
-                                                        </option>
-                                                    ),
-                                                )}
-                                            </select>
-                                            <InputError
-                                                message={errors.skill_id}
-                                            />
+                                                {availableSkills.map((skill) => (
+                                                    <SelectItem key={skill.id} value={String(skill.id)}>
+                                                        {skill.name} ({skill.skill_category.name})
+                                                    </SelectItem>
+                                                ))}
+                                            </FormSelect>
+                                            <InputError message={errors.skill_id} />
                                         </div>
                                         <Button
                                             type="submit"

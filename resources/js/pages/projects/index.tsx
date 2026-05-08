@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import {
     index,
     create,
@@ -9,8 +10,24 @@ import {
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { PaginatedData } from '@/types';
 import type { Project, ProjectStatus } from '@/types/projects';
+
+const statusOptions = [
+    { value: 'all', label: 'All statuses' },
+    { value: 'planning', label: 'Planning' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'on_hold', label: 'On Hold' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'cancelled', label: 'Cancelled' },
+];
 
 type Props = {
     projects: PaginatedData<Project & { skills_count: number }>;
@@ -39,10 +56,15 @@ function formatStatus(status: ProjectStatus): string {
 }
 
 export default function ProjectsIndex({ projects, filters }: Props) {
-    function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const [status, setStatus] = useState(filters.status ?? '');
+
+    function handleStatusChange(value: string) {
+        // Treat 'all' as clearing the filter
+        const newStatus = value === 'all' ? '' : value;
+        setStatus(newStatus);
         router.get(
             index.url(),
-            { status: e.target.value || undefined },
+            { status: newStatus || undefined },
             { preserveState: true, replace: true },
         );
     }
@@ -63,25 +85,21 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <label
-                        htmlFor="status-filter"
-                        className="text-sm font-medium text-muted-foreground"
-                    >
+                    <span className="text-sm font-medium text-muted-foreground">
                         Filter by status:
-                    </label>
-                    <select
-                        id="status-filter"
-                        value={filters.status ?? ''}
-                        onChange={handleStatusChange}
-                        className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                    >
-                        <option value="">All statuses</option>
-                        <option value="planning">Planning</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="on_hold">On Hold</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
+                    </span>
+                    <Select value={status || undefined} onValueChange={handleStatusChange}>
+                        <SelectTrigger className="w-50">
+                            <SelectValue placeholder="All statuses" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {statusOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="overflow-hidden rounded-lg border border-border">

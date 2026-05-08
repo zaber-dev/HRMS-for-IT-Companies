@@ -11,6 +11,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    FormSelect,
+    SelectItem,
+} from '@/components/ui/form-select';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
 import type { Auth, Skill, SkillAssignment, SkillCategory } from '@/types';
@@ -267,23 +271,17 @@ export default function Profile({
                             {({ errors, processing }) => (
                                 <>
                                     <div className="grid gap-1">
-                                        <select
+                                        <FormSelect
                                             name="skill_id"
-                                            className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+                                            placeholder="Select a skill"
+                                            className="w-64"
                                         >
-                                            <option value="">
-                                                Select a skill
-                                            </option>
                                             {availableSkills.map((skill) => (
-                                                <option
-                                                    key={skill.id}
-                                                    value={skill.id}
-                                                >
-                                                    {skill.name} (
-                                                    {skill.skill_category.name})
-                                                </option>
+                                                <SelectItem key={skill.id} value={String(skill.id)}>
+                                                    {skill.name} ({skill.skill_category.name})
+                                                </SelectItem>
                                             ))}
-                                        </select>
+                                        </FormSelect>
                                         <InputError message={errors.skill_id} />
                                     </div>
                                     <Button type="submit" disabled={processing}>
