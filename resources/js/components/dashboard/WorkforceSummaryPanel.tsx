@@ -8,7 +8,12 @@ type Props = {
     deactivated: number;
 };
 
-export function WorkforceSummaryPanel({ totalEmployees, onBench, assigned, deactivated }: Props) {
+export function WorkforceSummaryPanel({
+    totalEmployees,
+    onBench,
+    assigned,
+    deactivated,
+}: Props) {
     return (
         <div className="rounded-lg border border-border bg-card p-6">
             <h2 className="mb-4 text-lg font-semibold">Workforce Summary</h2>
@@ -17,13 +22,17 @@ export function WorkforceSummaryPanel({ totalEmployees, onBench, assigned, deact
                 <MetricCard
                     label="On Bench"
                     value={onBench}
-                    href={usersIndex.url({ query: { bench_status: 'on_bench' } })}
+                    href={usersIndex.url({
+                        query: { bench_status: 'on_bench' },
+                    })}
                     colorClass="text-blue-600 dark:text-blue-400"
                 />
                 <MetricCard
                     label="Assigned"
                     value={assigned}
-                    href={usersIndex.url({ query: { bench_status: 'assigned' } })}
+                    href={usersIndex.url({
+                        query: { bench_status: 'assigned' },
+                    })}
                     colorClass="text-green-600 dark:text-green-400"
                 />
                 <MetricCard
@@ -43,7 +52,12 @@ type MetricCardProps = {
     colorClass?: string;
 };
 
-function MetricCard({ label, value, href, colorClass = 'text-foreground' }: MetricCardProps) {
+function MetricCard({
+    label,
+    value,
+    href,
+    colorClass = 'text-foreground',
+}: MetricCardProps) {
     const content = (
         <div className="rounded-md border border-border bg-background p-4 text-center transition-colors hover:bg-muted/30">
             <div className={`text-3xl font-bold ${colorClass}`}>{value}</div>

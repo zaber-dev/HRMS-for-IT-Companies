@@ -21,7 +21,7 @@ export function MySkillsPanel({ skillsByCategory }: Props) {
                 <div className="space-y-4">
                     {categories.map((category) => (
                         <div key={category}>
-                            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            <h3 className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                                 {category}
                             </h3>
                             <div className="flex flex-wrap gap-2">
@@ -39,7 +39,9 @@ export function MySkillsPanel({ skillsByCategory }: Props) {
                                                     : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
                                             }`}
                                         >
-                                            {skill.source === 'self' ? 'Self' : 'Assigned'}
+                                            {skill.source === 'self'
+                                                ? 'Self'
+                                                : 'Assigned'}
                                         </span>
                                     </Link>
                                 ))}

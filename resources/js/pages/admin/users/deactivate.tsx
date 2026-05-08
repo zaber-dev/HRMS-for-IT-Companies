@@ -1,8 +1,12 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, deactivate, destroy } from '@/actions/App/Http/Controllers/Admin/UserController';
+import {
+    index,
+    deactivate,
+    destroy,
+} from '@/actions/App/Http/Controllers/Admin/UserController';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
-import { Role, User } from '@/types/auth';
+import type { Role, User } from '@/types/auth';
 
 type Props = {
     user: User & { roles: Role[] };
@@ -15,37 +19,50 @@ export default function UsersDeactivate({ user }: Props) {
         <>
             <Head title="Deactivate User" />
 
-            <div className="space-y-6 max-w-lg">
-                <Heading title="Deactivate User" description="Confirm user account deactivation" />
+            <div className="max-w-lg space-y-6">
+                <Heading
+                    title="Deactivate User"
+                    description="Confirm user account deactivation"
+                />
 
-                <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 space-y-3">
+                <div className="space-y-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
                     <p className="text-sm font-medium text-destructive">
-                        Warning: This will immediately lock the user out of the system.
+                        Warning: This will immediately lock the user out of the
+                        system.
                     </p>
                     <p className="text-sm text-muted-foreground">
-                        The user will be logged out on their next request and will not be able to log back in until reactivated.
+                        The user will be logged out on their next request and
+                        will not be able to log back in until reactivated.
                     </p>
                 </div>
 
-                <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-2">
+                <div className="space-y-2 rounded-lg border border-border bg-muted/30 p-4">
                     <div className="flex items-center gap-2 text-sm">
-                        <span className="font-medium w-16">Name:</span>
+                        <span className="w-16 font-medium">Name:</span>
                         <span>{user.name}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                        <span className="font-medium w-16">Email:</span>
-                        <span className="text-muted-foreground">{user.email}</span>
+                        <span className="w-16 font-medium">Email:</span>
+                        <span className="text-muted-foreground">
+                            {user.email}
+                        </span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                        <span className="font-medium w-16">Role:</span>
-                        <span className="text-muted-foreground">{roleName}</span>
+                        <span className="w-16 font-medium">Role:</span>
+                        <span className="text-muted-foreground">
+                            {roleName}
+                        </span>
                     </div>
                 </div>
 
                 <Form {...destroy.form(user)}>
                     {({ processing }) => (
                         <div className="flex items-center gap-4">
-                            <Button type="submit" variant="destructive" disabled={processing}>
+                            <Button
+                                type="submit"
+                                variant="destructive"
+                                disabled={processing}
+                            >
                                 Deactivate user
                             </Button>
                             <Button variant="outline" asChild>

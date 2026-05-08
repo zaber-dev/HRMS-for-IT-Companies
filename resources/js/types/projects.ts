@@ -1,7 +1,12 @@
-import type { Skill } from '@/types/skills';
 import type { User } from '@/types/auth';
+import type { Skill } from '@/types/skills';
 
-export type ProjectStatus = 'planning' | 'in_progress' | 'on_hold' | 'completed' | 'cancelled';
+export type ProjectStatus =
+    | 'planning'
+    | 'in_progress'
+    | 'on_hold'
+    | 'completed'
+    | 'cancelled';
 export type CompletionStatus = 'pending' | 'complete';
 export type BenchStatus = 'on_bench' | 'assigned';
 

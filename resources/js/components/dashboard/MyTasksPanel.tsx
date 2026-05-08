@@ -19,6 +19,7 @@ export function MyTasksPanel({ tasks }: Props) {
                 <div className="space-y-2">
                     {tasks.map((task, i) => {
                         const isOverdue = task.days_remaining < 0;
+
                         return (
                             <div
                                 key={i}
@@ -41,7 +42,8 @@ export function MyTasksPanel({ tasks }: Props) {
                                 <div className="shrink-0">
                                     {isOverdue ? (
                                         <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
-                                            Overdue {Math.abs(task.days_remaining)}d
+                                            Overdue{' '}
+                                            {Math.abs(task.days_remaining)}d
                                         </span>
                                     ) : (
                                         <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">

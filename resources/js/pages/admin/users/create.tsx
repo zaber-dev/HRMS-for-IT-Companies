@@ -1,11 +1,15 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, create, store } from '@/actions/App/Http/Controllers/Admin/UserController';
+import {
+    index,
+    create,
+    store,
+} from '@/actions/App/Http/Controllers/Admin/UserController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Role } from '@/types/auth';
+import type { Role } from '@/types/auth';
 
 type Props = {
     roles: Role[];
@@ -17,9 +21,12 @@ export default function UsersCreate({ roles }: Props) {
             <Head title="Create User" />
 
             <div className="space-y-6">
-                <Heading title="Create User" description="Add a new user account" />
+                <Heading
+                    title="Create User"
+                    description="Add a new user account"
+                />
 
-                <Form {...store.form()} className="space-y-6 max-w-lg">
+                <Form {...store.form()} className="max-w-lg space-y-6">
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">
@@ -53,7 +60,7 @@ export default function UsersCreate({ roles }: Props) {
                                 <select
                                     id="role"
                                     name="role"
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                     required
                                 >
                                     <option value="">Select a role</option>
@@ -67,7 +74,9 @@ export default function UsersCreate({ roles }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Temporary password</Label>
+                                <Label htmlFor="password">
+                                    Temporary password
+                                </Label>
                                 <Input
                                     id="password"
                                     name="password"

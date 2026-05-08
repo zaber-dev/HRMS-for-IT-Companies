@@ -1,11 +1,19 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { index, markComplete } from '@/actions/App/Http/Controllers/Projects/MyProjectController';
+import {
+    index,
+    markComplete,
+} from '@/actions/App/Http/Controllers/Projects/MyProjectController';
 import { show } from '@/actions/App/Http/Controllers/Projects/ProjectController';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { type Auth } from '@/types/auth';
-import { type BenchStatus, type CompletionStatus, type ProjectAssignment, type ProjectStatus } from '@/types/projects';
+import type { Auth } from '@/types/auth';
+import type {
+    BenchStatus,
+    CompletionStatus,
+    ProjectAssignment,
+    ProjectStatus,
+} from '@/types/projects';
 
 type AssignmentWithProject = ProjectAssignment & {
     project: {
@@ -22,12 +30,18 @@ type Props = {
 
 function statusBadgeClass(status: ProjectStatus): string {
     const map: Record<ProjectStatus, string> = {
-        planning: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-        in_progress: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-        on_hold: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
-        completed: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-        cancelled: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
+        planning:
+            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+        in_progress:
+            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+        on_hold:
+            'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
+        completed:
+            'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+        cancelled:
+            'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
     };
+
     return map[status] ?? '';
 }
 
@@ -51,7 +65,11 @@ function formatBenchStatus(status: BenchStatus): string {
     return status === 'on_bench' ? 'On Bench' : 'Assigned';
 }
 
-function MarkCompleteButton({ assignment }: { assignment: AssignmentWithProject }) {
+function MarkCompleteButton({
+    assignment,
+}: {
+    assignment: AssignmentWithProject;
+}) {
     const { patch, processing } = useForm({});
     const isComplete = assignment.completion_status === 'complete';
 
@@ -81,7 +99,10 @@ export default function MyProjectsIndex({ assignments }: Props) {
 
             <div className="space-y-6">
                 <div className="flex items-start justify-between gap-4">
-                    <Heading title="My Projects" description="Projects you are currently assigned to" />
+                    <Heading
+                        title="My Projects"
+                        description="Projects you are currently assigned to"
+                    />
 
                     <div className="shrink-0">
                         <Badge className={benchStatusBadgeClass(benchStatus)}>
@@ -94,50 +115,92 @@ export default function MyProjectsIndex({ assignments }: Props) {
                     <table className="w-full text-sm">
                         <thead className="bg-muted/50">
                             <tr>
-                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Project</th>
-                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
-                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Project Deadline</th>
-                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Task Description</th>
-                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Task Deadline</th>
-                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Completion</th>
-                                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Actions</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                                    Project
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                                    Status
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                                    Project Deadline
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                                    Task Description
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                                    Task Deadline
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                                    Completion
+                                </th>
+                                <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
                             {assignments.map((assignment) => (
-                                <tr key={assignment.id} className="bg-background hover:bg-muted/30 transition-colors">
+                                <tr
+                                    key={assignment.id}
+                                    className="bg-background transition-colors hover:bg-muted/30"
+                                >
                                     <td className="px-4 py-3 font-medium">
-                                        <Link href={show.url(assignment.project)} className="hover:underline">
+                                        <Link
+                                            href={show.url(assignment.project)}
+                                            className="hover:underline"
+                                        >
                                             {assignment.project.name}
                                         </Link>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <Badge className={statusBadgeClass(assignment.project.status)}>
-                                            {formatStatus(assignment.project.status)}
+                                        <Badge
+                                            className={statusBadgeClass(
+                                                assignment.project.status,
+                                            )}
+                                        >
+                                            {formatStatus(
+                                                assignment.project.status,
+                                            )}
                                         </Badge>
                                     </td>
                                     <td className="px-4 py-3 text-muted-foreground">
-                                        {new Date(assignment.project.deadline).toLocaleDateString()}
+                                        {new Date(
+                                            assignment.project.deadline,
+                                        ).toLocaleDateString()}
                                     </td>
-                                    <td className="px-4 py-3 text-muted-foreground max-w-xs truncate">
+                                    <td className="max-w-xs truncate px-4 py-3 text-muted-foreground">
                                         {assignment.task_description}
                                     </td>
                                     <td className="px-4 py-3 text-muted-foreground">
-                                        {new Date(assignment.task_deadline).toLocaleDateString()}
+                                        {new Date(
+                                            assignment.task_deadline,
+                                        ).toLocaleDateString()}
                                     </td>
                                     <td className="px-4 py-3">
-                                        <Badge className={completionStatusBadgeClass(assignment.completion_status)}>
-                                            {assignment.completion_status === 'complete' ? 'Complete' : 'Pending'}
+                                        <Badge
+                                            className={completionStatusBadgeClass(
+                                                assignment.completion_status,
+                                            )}
+                                        >
+                                            {assignment.completion_status ===
+                                            'complete'
+                                                ? 'Complete'
+                                                : 'Pending'}
                                         </Badge>
                                     </td>
                                     <td className="px-4 py-3 text-right">
-                                        <MarkCompleteButton assignment={assignment} />
+                                        <MarkCompleteButton
+                                            assignment={assignment}
+                                        />
                                     </td>
                                 </tr>
                             ))}
                             {assignments.length === 0 && (
                                 <tr>
-                                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                                    <td
+                                        colSpan={7}
+                                        className="px-4 py-8 text-center text-muted-foreground"
+                                    >
                                         You are not assigned to any projects.
                                     </td>
                                 </tr>

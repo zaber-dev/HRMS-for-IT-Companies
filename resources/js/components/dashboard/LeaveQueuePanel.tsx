@@ -13,8 +13,12 @@ export function LeaveQueuePanel({ count }: Props) {
                 href={index.url()}
                 className="block rounded-md border border-border bg-background p-4 text-center transition-colors hover:bg-muted/30"
             >
-                <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{count}</div>
-                <div className="mt-1 text-sm text-muted-foreground">Pending Approvals</div>
+                <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
+                    {count}
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                    Pending Approvals
+                </div>
             </Link>
         </div>
     );

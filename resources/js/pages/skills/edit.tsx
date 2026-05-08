@@ -1,11 +1,14 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, edit, update } from '@/actions/App/Http/Controllers/Skills/SkillController';
+import {
+    index,
+    update,
+} from '@/actions/App/Http/Controllers/Skills/SkillController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { type Skill, type SkillCategory } from '@/types';
+import type { Skill, SkillCategory } from '@/types';
 
 type Props = {
     skill: Skill & { skill_category: SkillCategory };
@@ -18,9 +21,12 @@ export default function SkillEdit({ skill, categories }: Props) {
             <Head title={`Edit Skill: ${skill.name}`} />
 
             <div className="space-y-6">
-                <Heading title="Edit Skill" description="Update skill details" />
+                <Heading
+                    title="Edit Skill"
+                    description="Update skill details"
+                />
 
-                <Form {...update.form(skill)} className="space-y-6 max-w-lg">
+                <Form {...update.form(skill)} className="max-w-lg space-y-6">
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">
@@ -37,25 +43,34 @@ export default function SkillEdit({ skill, categories }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="skill_category_id">Category</Label>
+                                <Label htmlFor="skill_category_id">
+                                    Category
+                                </Label>
                                 <select
                                     id="skill_category_id"
                                     name="skill_category_id"
                                     required
                                     defaultValue={skill.skill_category_id}
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                 >
                                     <option value="">Select a category</option>
                                     {categories.map((cat) => (
-                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                        <option key={cat.id} value={cat.id}>
+                                            {cat.name}
+                                        </option>
                                     ))}
                                 </select>
-                                <InputError message={errors.skill_category_id} />
+                                <InputError
+                                    message={errors.skill_category_id}
+                                />
                             </div>
 
                             <div className="grid gap-2">
                                 <Label htmlFor="description">
-                                    Description <span className="text-muted-foreground">(optional)</span>
+                                    Description{' '}
+                                    <span className="text-muted-foreground">
+                                        (optional)
+                                    </span>
                                 </Label>
                                 <textarea
                                     id="description"
@@ -63,7 +78,7 @@ export default function SkillEdit({ skill, categories }: Props) {
                                     rows={4}
                                     defaultValue={skill.description ?? ''}
                                     placeholder="Brief description of this skill"
-                                    className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                 />
                                 <InputError message={errors.description} />
                             </div>

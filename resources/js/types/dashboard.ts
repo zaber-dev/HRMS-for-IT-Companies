@@ -65,7 +65,10 @@ export type DashboardProps = {
             end_date: string;
         } | null;
     };
-    mySkills?: Record<string, Array<{ id: number; name: string; source: 'self' | 'privileged' }>>;
+    mySkills?: Record<
+        string,
+        Array<{ id: number; name: string; source: 'self' | 'privileged' }>
+    >;
 };
 
 export type DashboardDeferredProps = {

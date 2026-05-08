@@ -1,5 +1,9 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, create, store } from '@/actions/App/Http/Controllers/Skills/SkillCategoryController';
+import {
+    index,
+    create,
+    store,
+} from '@/actions/App/Http/Controllers/Skills/SkillCategoryController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -12,9 +16,12 @@ export default function SkillCategoryCreate() {
             <Head title="New Skill Category" />
 
             <div className="space-y-6">
-                <Heading title="New Skill Category" description="Add a new category to organise skills" />
+                <Heading
+                    title="New Skill Category"
+                    description="Add a new category to organise skills"
+                />
 
-                <Form {...store.form()} className="space-y-6 max-w-lg">
+                <Form {...store.form()} className="max-w-lg space-y-6">
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">

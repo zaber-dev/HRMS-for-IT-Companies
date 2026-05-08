@@ -1,16 +1,25 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, edit, update } from '@/actions/App/Http/Controllers/Admin/UserController';
-import { store as assignSkill, destroy as removeSkill } from '@/actions/App/Http/Controllers/Skills/SkillAssignmentController';
+import {
+    index,
+    edit,
+    update,
+} from '@/actions/App/Http/Controllers/Admin/UserController';
+import {
+    store as assignSkill,
+    destroy as removeSkill,
+} from '@/actions/App/Http/Controllers/Skills/SkillAssignmentController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { type Role, type User } from '@/types/auth';
-import { type Skill, type SkillAssignment, type SkillCategory } from '@/types/skills';
+import type { Role, User } from '@/types/auth';
+import type { Skill, SkillAssignment, SkillCategory } from '@/types/skills';
 
-type AssignedSkill = SkillAssignment & { skill: Skill & { skill_category: SkillCategory } };
+type AssignedSkill = SkillAssignment & {
+    skill: Skill & { skill_category: SkillCategory };
+};
 type AvailableSkill = Skill & { skill_category: SkillCategory };
 
 type Props = {
@@ -20,7 +29,12 @@ type Props = {
     availableSkills: AvailableSkill[];
 };
 
-export default function UsersEdit({ user, roles, assignedSkills = [], availableSkills = [] }: Props) {
+export default function UsersEdit({
+    user,
+    roles,
+    assignedSkills = [],
+    availableSkills = [],
+}: Props) {
     const currentRole = user.roles[0]?.name ?? '';
 
     return (
@@ -28,12 +42,15 @@ export default function UsersEdit({ user, roles, assignedSkills = [], availableS
             <Head title="Edit User" />
 
             <div className="space-y-8">
-                <Heading title="Edit User" description="Update user account details and skills" />
+                <Heading
+                    title="Edit User"
+                    description="Update user account details and skills"
+                />
 
                 {/* Account details form */}
                 <div className="space-y-6">
                     <h2 className="text-base font-semibold">Account Details</h2>
-                    <Form {...update.form(user)} className="space-y-6 max-w-lg">
+                    <Form {...update.form(user)} className="max-w-lg space-y-6">
                         {({ errors, processing }) => (
                             <>
                                 <div className="grid gap-2">
@@ -70,12 +87,15 @@ export default function UsersEdit({ user, roles, assignedSkills = [], availableS
                                         id="role"
                                         name="role"
                                         defaultValue={currentRole}
-                                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                         required
                                     >
                                         <option value="">Select a role</option>
                                         {roles.map((role) => (
-                                            <option key={role.id} value={role.name}>
+                                            <option
+                                                key={role.id}
+                                                value={role.name}
+                                            >
                                                 {role.name}
                                             </option>
                                         ))}
@@ -99,7 +119,9 @@ export default function UsersEdit({ user, roles, assignedSkills = [], availableS
                 {/* Skills management */}
                 <div className="space-y-4 border-t border-border pt-6">
                     <h2 className="text-base font-semibold">Skills</h2>
-                    <p className="text-sm text-muted-foreground">Manage skills assigned to this user.</p>
+                    <p className="text-sm text-muted-foreground">
+                        Manage skills assigned to this user.
+                    </p>
 
                     {/* Assigned skills */}
                     {assignedSkills.length > 0 ? (
@@ -110,8 +132,15 @@ export default function UsersEdit({ user, roles, assignedSkills = [], availableS
                                     className="flex items-center justify-between rounded-lg border border-border px-4 py-3"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <span className="text-sm font-medium">{assignment.skill.name}</span>
-                                        <Badge variant="secondary">{assignment.skill.skill_category.name}</Badge>
+                                        <span className="text-sm font-medium">
+                                            {assignment.skill.name}
+                                        </span>
+                                        <Badge variant="secondary">
+                                            {
+                                                assignment.skill.skill_category
+                                                    .name
+                                            }
+                                        </Badge>
                                         <Badge
                                             className={
                                                 assignment.source === 'self'
@@ -119,16 +148,26 @@ export default function UsersEdit({ user, roles, assignedSkills = [], availableS
                                                     : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
                                             }
                                         >
-                                            {assignment.source === 'self' ? 'Self-assigned' : 'Assigned by HR'}
+                                            {assignment.source === 'self'
+                                                ? 'Self-assigned'
+                                                : 'Assigned by HR'}
                                         </Badge>
                                     </div>
                                     <Form
-                                        action={removeSkill.url({ user: user.id, skill: assignment.skill_id })}
+                                        action={removeSkill.url({
+                                            user: user.id,
+                                            skill: assignment.skill_id,
+                                        })}
                                         method="delete"
                                         className="inline"
                                     >
                                         {({ processing }) => (
-                                            <Button variant="outline" size="sm" type="submit" disabled={processing}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                type="submit"
+                                                disabled={processing}
+                                            >
                                                 Remove
                                             </Button>
                                         )}
@@ -137,7 +176,9 @@ export default function UsersEdit({ user, roles, assignedSkills = [], availableS
                             ))}
                         </div>
                     ) : (
-                        <p className="text-sm text-muted-foreground">No skills assigned yet.</p>
+                        <p className="text-sm text-muted-foreground">
+                            No skills assigned yet.
+                        </p>
                     )}
 
                     {/* Add skill */}
@@ -154,18 +195,36 @@ export default function UsersEdit({ user, roles, assignedSkills = [], availableS
                                         <div className="grid gap-1">
                                             <select
                                                 name="skill_id"
-                                                className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                                className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                             >
-                                                <option value="">Select a skill</option>
-                                                {availableSkills.map((skill) => (
-                                                    <option key={skill.id} value={skill.id}>
-                                                        {skill.name} ({skill.skill_category.name})
-                                                    </option>
-                                                ))}
+                                                <option value="">
+                                                    Select a skill
+                                                </option>
+                                                {availableSkills.map(
+                                                    (skill) => (
+                                                        <option
+                                                            key={skill.id}
+                                                            value={skill.id}
+                                                        >
+                                                            {skill.name} (
+                                                            {
+                                                                skill
+                                                                    .skill_category
+                                                                    .name
+                                                            }
+                                                            )
+                                                        </option>
+                                                    ),
+                                                )}
                                             </select>
-                                            <InputError message={errors.skill_id} />
+                                            <InputError
+                                                message={errors.skill_id}
+                                            />
                                         </div>
-                                        <Button type="submit" disabled={processing}>
+                                        <Button
+                                            type="submit"
+                                            disabled={processing}
+                                        >
                                             Assign
                                         </Button>
                                     </>

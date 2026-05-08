@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { show as projectShow } from '@/actions/App/Http/Controllers/Projects/ProjectController';
 import { edit as userEdit } from '@/actions/App/Http/Controllers/Admin/UserController';
+import { show as projectShow } from '@/actions/App/Http/Controllers/Projects/ProjectController';
 import type { DashboardProps } from '@/types/dashboard';
 
 type Props = {
@@ -21,16 +21,29 @@ export function DeadlineAlertPanel({ alerts }: Props) {
                     <table className="w-full text-sm">
                         <thead className="bg-muted/50">
                             <tr>
-                                <th className="px-4 py-2 text-left font-medium text-muted-foreground">Employee</th>
-                                <th className="px-4 py-2 text-left font-medium text-muted-foreground">Project</th>
-                                <th className="px-4 py-2 text-left font-medium text-muted-foreground">Task</th>
-                                <th className="px-4 py-2 text-right font-medium text-muted-foreground">Deadline</th>
-                                <th className="px-4 py-2 text-right font-medium text-muted-foreground">Days Overdue</th>
+                                <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                                    Employee
+                                </th>
+                                <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                                    Project
+                                </th>
+                                <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                                    Task
+                                </th>
+                                <th className="px-4 py-2 text-right font-medium text-muted-foreground">
+                                    Deadline
+                                </th>
+                                <th className="px-4 py-2 text-right font-medium text-muted-foreground">
+                                    Days Overdue
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
                             {alerts.map((alert, i) => (
-                                <tr key={i} className="bg-background hover:bg-muted/30 transition-colors">
+                                <tr
+                                    key={i}
+                                    className="bg-background transition-colors hover:bg-muted/30"
+                                >
                                     <td className="px-4 py-2">
                                         <Link
                                             href={userEdit.url(alert.user_id)}
@@ -41,7 +54,9 @@ export function DeadlineAlertPanel({ alerts }: Props) {
                                     </td>
                                     <td className="px-4 py-2">
                                         <Link
-                                            href={projectShow.url(alert.project_id)}
+                                            href={projectShow.url(
+                                                alert.project_id,
+                                            )}
                                             className="hover:underline"
                                         >
                                             {alert.project_name}
@@ -72,7 +87,10 @@ export function DeadlineAlertPanelSkeleton() {
             <div className="mb-4 h-6 w-36 animate-pulse rounded bg-muted" />
             <div className="space-y-2">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-10 animate-pulse rounded bg-muted" />
+                    <div
+                        key={i}
+                        className="h-10 animate-pulse rounded bg-muted"
+                    />
                 ))}
             </div>
         </div>

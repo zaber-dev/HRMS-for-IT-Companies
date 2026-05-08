@@ -1,11 +1,15 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, create, store } from '@/actions/App/Http/Controllers/Skills/SkillController';
+import {
+    index,
+    create,
+    store,
+} from '@/actions/App/Http/Controllers/Skills/SkillController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { type SkillCategory } from '@/types';
+import type { SkillCategory } from '@/types';
 
 type Props = {
     categories: SkillCategory[];
@@ -17,9 +21,12 @@ export default function SkillCreate({ categories }: Props) {
             <Head title="New Skill" />
 
             <div className="space-y-6">
-                <Heading title="New Skill" description="Add a new skill to the catalogue" />
+                <Heading
+                    title="New Skill"
+                    description="Add a new skill to the catalogue"
+                />
 
-                <Form {...store.form()} className="space-y-6 max-w-lg">
+                <Form {...store.form()} className="max-w-lg space-y-6">
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">
@@ -35,31 +42,40 @@ export default function SkillCreate({ categories }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="skill_category_id">Category</Label>
+                                <Label htmlFor="skill_category_id">
+                                    Category
+                                </Label>
                                 <select
                                     id="skill_category_id"
                                     name="skill_category_id"
                                     required
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                 >
                                     <option value="">Select a category</option>
                                     {categories.map((cat) => (
-                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                        <option key={cat.id} value={cat.id}>
+                                            {cat.name}
+                                        </option>
                                     ))}
                                 </select>
-                                <InputError message={errors.skill_category_id} />
+                                <InputError
+                                    message={errors.skill_category_id}
+                                />
                             </div>
 
                             <div className="grid gap-2">
                                 <Label htmlFor="description">
-                                    Description <span className="text-muted-foreground">(optional)</span>
+                                    Description{' '}
+                                    <span className="text-muted-foreground">
+                                        (optional)
+                                    </span>
                                 </Label>
                                 <textarea
                                     id="description"
                                     name="description"
                                     rows={4}
                                     placeholder="Brief description of this skill"
-                                    className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                 />
                                 <InputError message={errors.description} />
                             </div>

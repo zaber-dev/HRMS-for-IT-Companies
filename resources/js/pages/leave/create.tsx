@@ -1,5 +1,9 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, create, store } from '@/actions/App/Http/Controllers/Leave/LeaveRequestController';
+import {
+    index,
+    create,
+    store,
+} from '@/actions/App/Http/Controllers/Leave/LeaveRequestController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -12,9 +16,12 @@ export default function LeaveRequestCreate() {
             <Head title="New Leave Request" />
 
             <div className="space-y-6">
-                <Heading title="New Leave Request" description="Submit a PTO leave request for approval" />
+                <Heading
+                    title="New Leave Request"
+                    description="Submit a PTO leave request for approval"
+                />
 
-                <Form {...store.form()} className="space-y-6 max-w-lg">
+                <Form {...store.form()} className="max-w-lg space-y-6">
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">
@@ -40,13 +47,18 @@ export default function LeaveRequestCreate() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="reason">Reason <span className="text-muted-foreground">(optional)</span></Label>
+                                <Label htmlFor="reason">
+                                    Reason{' '}
+                                    <span className="text-muted-foreground">
+                                        (optional)
+                                    </span>
+                                </Label>
                                 <textarea
                                     id="reason"
                                     name="reason"
                                     rows={4}
                                     placeholder="Briefly describe the reason for your leave request"
-                                    className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                 />
                                 <InputError message={errors.reason} />
                             </div>

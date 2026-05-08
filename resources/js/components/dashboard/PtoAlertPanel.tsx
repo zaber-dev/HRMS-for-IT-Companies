@@ -24,17 +24,30 @@ export function PtoAlertPanel({ alerts, threshold }: Props) {
                     <table className="w-full text-sm">
                         <thead className="bg-muted/50">
                             <tr>
-                                <th className="px-4 py-2 text-left font-medium text-muted-foreground">Employee</th>
-                                <th className="px-4 py-2 text-right font-medium text-muted-foreground">Total Days</th>
-                                <th className="px-4 py-2 text-right font-medium text-muted-foreground">Pending</th>
+                                <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                                    Employee
+                                </th>
+                                <th className="px-4 py-2 text-right font-medium text-muted-foreground">
+                                    Total Days
+                                </th>
+                                <th className="px-4 py-2 text-right font-medium text-muted-foreground">
+                                    Pending
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
                             {alerts.map((alert) => (
-                                <tr key={alert.user_id} className="bg-background hover:bg-muted/30 transition-colors">
+                                <tr
+                                    key={alert.user_id}
+                                    className="bg-background transition-colors hover:bg-muted/30"
+                                >
                                     <td className="px-4 py-2">
                                         <Link
-                                            href={leaveIndex.url({ query: { user_id: alert.user_id } })}
+                                            href={leaveIndex.url({
+                                                query: {
+                                                    user_id: alert.user_id,
+                                                },
+                                            })}
                                             className="font-medium hover:underline"
                                         >
                                             {alert.name}
@@ -62,7 +75,10 @@ export function PtoAlertPanelSkeleton() {
             <div className="mb-4 h-6 w-32 animate-pulse rounded bg-muted" />
             <div className="space-y-2">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-10 animate-pulse rounded bg-muted" />
+                    <div
+                        key={i}
+                        className="h-10 animate-pulse rounded bg-muted"
+                    />
                 ))}
             </div>
         </div>

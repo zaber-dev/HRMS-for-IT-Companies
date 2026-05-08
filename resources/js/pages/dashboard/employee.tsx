@@ -1,15 +1,18 @@
 import { Head, usePage } from '@inertiajs/react';
-import { dashboard } from '@/routes';
-import { PersonalStatsPanel } from '@/components/dashboard/PersonalStatsPanel';
-import { MyTasksPanel } from '@/components/dashboard/MyTasksPanel';
-import { MyProjectsPanel } from '@/components/dashboard/MyProjectsPanel';
 import { MyLeavePanel } from '@/components/dashboard/MyLeavePanel';
+import { MyProjectsPanel } from '@/components/dashboard/MyProjectsPanel';
 import { MySkillsPanel } from '@/components/dashboard/MySkillsPanel';
-import type { DashboardProps } from '@/types/dashboard';
+import { MyTasksPanel } from '@/components/dashboard/MyTasksPanel';
+import { PersonalStatsPanel } from '@/components/dashboard/PersonalStatsPanel';
+import { dashboard } from '@/routes';
 import type { Auth } from '@/types';
+import type { DashboardProps } from '@/types/dashboard';
 
 type Props = Required<
-    Pick<DashboardProps, 'personalStats' | 'myTasks' | 'myProjects' | 'myLeave' | 'mySkills'>
+    Pick<
+        DashboardProps,
+        'personalStats' | 'myTasks' | 'myProjects' | 'myLeave' | 'mySkills'
+    >
 >;
 
 export default function EmployeeDashboard({

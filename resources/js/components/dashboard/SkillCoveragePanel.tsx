@@ -62,7 +62,10 @@ export function SkillCoveragePanelSkeleton() {
             <div className="mb-4 h-6 w-40 animate-pulse rounded bg-muted" />
             <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-16 animate-pulse rounded bg-muted" />
+                    <div
+                        key={i}
+                        className="h-16 animate-pulse rounded bg-muted"
+                    />
                 ))}
             </div>
         </div>

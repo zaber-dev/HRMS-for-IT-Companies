@@ -1,11 +1,15 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, edit, update } from '@/actions/App/Http/Controllers/Admin/RoleController';
+import {
+    index,
+    edit,
+    update,
+} from '@/actions/App/Http/Controllers/Admin/RoleController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Role } from '@/types/auth';
+import type { Role } from '@/types/auth';
 
 type Props = {
     role: Role;
@@ -19,7 +23,7 @@ export default function RolesEdit({ role }: Props) {
             <div className="space-y-6">
                 <Heading title="Edit Role" description="Update the role name" />
 
-                <Form {...update.form(role)} className="space-y-6 max-w-lg">
+                <Form {...update.form(role)} className="max-w-lg space-y-6">
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">

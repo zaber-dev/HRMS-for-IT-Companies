@@ -59,7 +59,9 @@ export default function Security({
 
             {mustChangePassword && (
                 <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900/30 dark:bg-amber-900/10 dark:text-amber-400">
-                    <strong>Action required:</strong> Your account requires a password change before you can access the platform. Please set a new password below.
+                    <strong>Action required:</strong> Your account requires a
+                    password change before you can access the platform. Please
+                    set a new password below.
                 </div>
             )}
 

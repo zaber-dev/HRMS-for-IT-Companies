@@ -1,8 +1,8 @@
 import { Link } from '@inertiajs/react';
 import { show as projectShow } from '@/actions/App/Http/Controllers/Projects/ProjectController';
 import { Badge } from '@/components/ui/badge';
-import type { ProjectStatus } from '@/types/projects';
 import type { DashboardProps } from '@/types/dashboard';
+import type { ProjectStatus } from '@/types/projects';
 
 type Props = {
     projects: NonNullable<DashboardProps['myProjects']>;
@@ -10,12 +10,18 @@ type Props = {
 
 function statusBadgeClass(status: string): string {
     const map: Record<ProjectStatus, string> = {
-        planning: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-        in_progress: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-        on_hold: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
-        completed: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-        cancelled: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
+        planning:
+            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+        in_progress:
+            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+        on_hold:
+            'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
+        completed:
+            'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+        cancelled:
+            'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
     };
+
     return map[status as ProjectStatus] ?? 'bg-gray-100 text-gray-800';
 }
 
@@ -42,7 +48,9 @@ export function MyProjectsPanel({ projects }: Props) {
                             <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">
                                     <Link
-                                        href={projectShow.url(project.project_id)}
+                                        href={projectShow.url(
+                                            project.project_id,
+                                        )}
                                         className="text-sm font-medium hover:underline"
                                     >
                                         {project.name}

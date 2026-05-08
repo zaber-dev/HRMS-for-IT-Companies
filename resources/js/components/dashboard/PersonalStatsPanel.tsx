@@ -5,11 +5,21 @@ import type { DashboardProps } from '@/types/dashboard';
 type Props = NonNullable<DashboardProps['personalStats']> & { userId: number };
 
 function formatRole(role: string | null): string {
-    if (!role) return 'Unknown';
+    if (!role) {
+        return 'Unknown';
+    }
+
     return role.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export function PersonalStatsPanel({ userId, name, role, bench_status, skills_count, created_at }: Props) {
+export function PersonalStatsPanel({
+    userId,
+    name,
+    role,
+    bench_status,
+    skills_count,
+    created_at,
+}: Props) {
     const isOnBench = bench_status === 'on_bench';
 
     return (
@@ -25,7 +35,9 @@ export function PersonalStatsPanel({ userId, name, role, bench_status, skills_co
                     <span className="font-medium">{formatRole(role)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Status</span>
+                    <span className="text-sm text-muted-foreground">
+                        Status
+                    </span>
                     <span
                         className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                             isOnBench
@@ -37,7 +49,9 @@ export function PersonalStatsPanel({ userId, name, role, bench_status, skills_co
                     </span>
                 </div>
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Skills</span>
+                    <span className="text-sm text-muted-foreground">
+                        Skills
+                    </span>
                     <Link
                         href={userEdit.url(userId)}
                         className="font-medium text-primary hover:underline"
@@ -46,7 +60,9 @@ export function PersonalStatsPanel({ userId, name, role, bench_status, skills_co
                     </Link>
                 </div>
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Member since</span>
+                    <span className="text-sm text-muted-foreground">
+                        Member since
+                    </span>
                     <span className="text-sm text-muted-foreground">
                         {new Date(created_at).toLocaleDateString()}
                     </span>

@@ -1,12 +1,21 @@
 import { Head } from '@inertiajs/react';
 import { Deferred } from '@inertiajs/react';
-import { dashboard } from '@/routes';
-import { WorkforceSummaryPanel } from '@/components/dashboard/WorkforceSummaryPanel';
-import { ProjectHealthPanel } from '@/components/dashboard/ProjectHealthPanel';
+import {
+    DeadlineAlertPanel,
+    DeadlineAlertPanelSkeleton,
+} from '@/components/dashboard/DeadlineAlertPanel';
 import { LeaveQueuePanel } from '@/components/dashboard/LeaveQueuePanel';
-import { PtoAlertPanel, PtoAlertPanelSkeleton } from '@/components/dashboard/PtoAlertPanel';
-import { DeadlineAlertPanel, DeadlineAlertPanelSkeleton } from '@/components/dashboard/DeadlineAlertPanel';
-import { SkillCoveragePanel, SkillCoveragePanelSkeleton } from '@/components/dashboard/SkillCoveragePanel';
+import { ProjectHealthPanel } from '@/components/dashboard/ProjectHealthPanel';
+import {
+    PtoAlertPanel,
+    PtoAlertPanelSkeleton,
+} from '@/components/dashboard/PtoAlertPanel';
+import {
+    SkillCoveragePanel,
+    SkillCoveragePanelSkeleton,
+} from '@/components/dashboard/SkillCoveragePanel';
+import { WorkforceSummaryPanel } from '@/components/dashboard/WorkforceSummaryPanel';
+import { dashboard } from '@/routes';
 import type { DashboardProps } from '@/types/dashboard';
 
 type Props = Required<
@@ -52,19 +61,42 @@ export default function HrDashboard({
                 {/* Deferred panels */}
                 <Deferred data="ptoAlerts" fallback={<PtoAlertPanelSkeleton />}>
                     {(ptoAlerts: DashboardProps['ptoAlerts']) => (
-                        <PtoAlertPanel alerts={Array.isArray(ptoAlerts) ? ptoAlerts : []} threshold={14} />
+                        <PtoAlertPanel
+                            alerts={Array.isArray(ptoAlerts) ? ptoAlerts : []}
+                            threshold={14}
+                        />
                     )}
                 </Deferred>
 
-                <Deferred data="deadlineAlerts" fallback={<DeadlineAlertPanelSkeleton />}>
+                <Deferred
+                    data="deadlineAlerts"
+                    fallback={<DeadlineAlertPanelSkeleton />}
+                >
                     {(deadlineAlerts: DashboardProps['deadlineAlerts']) => (
-                        <DeadlineAlertPanel alerts={Array.isArray(deadlineAlerts) ? deadlineAlerts : []} />
+                        <DeadlineAlertPanel
+                            alerts={
+                                Array.isArray(deadlineAlerts)
+                                    ? deadlineAlerts
+                                    : []
+                            }
+                        />
                     )}
                 </Deferred>
 
-                <Deferred data="skillCoverageProjects" fallback={<SkillCoveragePanelSkeleton />}>
-                    {(skillCoverageProjects: DashboardProps['skillCoverageProjects']) => (
-                        <SkillCoveragePanel projects={Array.isArray(skillCoverageProjects) ? skillCoverageProjects : []} />
+                <Deferred
+                    data="skillCoverageProjects"
+                    fallback={<SkillCoveragePanelSkeleton />}
+                >
+                    {(
+                        skillCoverageProjects: DashboardProps['skillCoverageProjects'],
+                    ) => (
+                        <SkillCoveragePanel
+                            projects={
+                                Array.isArray(skillCoverageProjects)
+                                    ? skillCoverageProjects
+                                    : []
+                            }
+                        />
                     )}
                 </Deferred>
             </div>

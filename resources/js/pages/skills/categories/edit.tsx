@@ -1,11 +1,14 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { index, edit, update } from '@/actions/App/Http/Controllers/Skills/SkillCategoryController';
+import {
+    index,
+    update,
+} from '@/actions/App/Http/Controllers/Skills/SkillCategoryController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { type SkillCategory } from '@/types';
+import type { SkillCategory } from '@/types';
 
 type Props = {
     category: SkillCategory;
@@ -17,9 +20,12 @@ export default function SkillCategoryEdit({ category }: Props) {
             <Head title={`Edit Category: ${category.name}`} />
 
             <div className="space-y-6">
-                <Heading title="Edit Skill Category" description="Rename this skill category" />
+                <Heading
+                    title="Edit Skill Category"
+                    description="Rename this skill category"
+                />
 
-                <Form {...update.form(category)} className="space-y-6 max-w-lg">
+                <Form {...update.form(category)} className="max-w-lg space-y-6">
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">

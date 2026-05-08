@@ -1,12 +1,15 @@
 import { Form, Head } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
+import {
+    index as permissionsIndex,
+    update,
+} from '@/actions/App/Http/Controllers/Admin/PermissionController';
 import { index as rolesIndex } from '@/actions/App/Http/Controllers/Admin/RoleController';
-import { index as permissionsIndex, update } from '@/actions/App/Http/Controllers/Admin/PermissionController';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Permission, Role } from '@/types/auth';
+import type { Permission, Role } from '@/types/auth';
 
 type Props = {
     role: Role;
@@ -24,12 +27,15 @@ export default function PermissionsEdit({ role, permissions }: Props) {
                     description="Assign or revoke permissions for this role"
                 />
 
-                <Form {...update.form(role)} className="space-y-6 max-w-lg">
+                <Form {...update.form(role)} className="max-w-lg space-y-6">
                     {({ errors, processing }) => (
                         <>
                             <div className="space-y-3">
                                 {permissions.map((permission) => (
-                                    <div key={permission.id} className="flex items-center gap-3">
+                                    <div
+                                        key={permission.id}
+                                        className="flex items-center gap-3"
+                                    >
                                         <Checkbox
                                             id={`permission-${permission.id}`}
                                             name="permissions[]"
@@ -45,12 +51,16 @@ export default function PermissionsEdit({ role, permissions }: Props) {
                                     </div>
                                 ))}
                                 {permissions.length === 0 && (
-                                    <p className="text-sm text-muted-foreground">No permissions available.</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        No permissions available.
+                                    </p>
                                 )}
                             </div>
 
                             {errors.permissions && (
-                                <p className="text-sm text-destructive">{errors.permissions}</p>
+                                <p className="text-sm text-destructive">
+                                    {errors.permissions}
+                                </p>
                             )}
 
                             <div className="flex items-center gap-4">

@@ -1,6 +1,9 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
-import { store as assignSkill, destroy as removeSkill } from '@/actions/App/Http/Controllers/Skills/SkillAssignmentController';
+import {
+    store as assignSkill,
+    destroy as removeSkill,
+} from '@/actions/App/Http/Controllers/Skills/SkillAssignmentController';
 import DeleteUser from '@/components/delete-user';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -10,9 +13,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
-import { type Auth, type Skill, type SkillAssignment, type SkillCategory } from '@/types';
+import type { Auth, Skill, SkillAssignment, SkillCategory } from '@/types';
 
-type AssignedSkill = SkillAssignment & { skill: Skill & { skill_category: SkillCategory } };
+type AssignedSkill = SkillAssignment & {
+    skill: Skill & { skill_category: SkillCategory };
+};
 type AvailableSkill = Skill & { skill_category: SkillCategory };
 
 export default function Profile({
@@ -31,7 +36,9 @@ export default function Profile({
     const { auth } = usePage<{ auth: Auth }>().props;
 
     const selfAssigned = assignedSkills.filter((a) => a.source === 'self');
-    const privilegedAssigned = assignedSkills.filter((a) => a.source === 'privileged');
+    const privilegedAssigned = assignedSkills.filter(
+        (a) => a.source === 'privileged',
+    );
 
     return (
         <>
@@ -133,7 +140,7 @@ export default function Profile({
             </div>
 
             {/* Skills Section */}
-            <div className="space-y-6 mt-8">
+            <div className="mt-8 space-y-6">
                 <Heading
                     variant="small"
                     title="Skills"
@@ -146,21 +153,39 @@ export default function Profile({
                     {selfAssigned.length > 0 ? (
                         <div className="space-y-2">
                             {selfAssigned.map((assignment) => (
-                                <div key={assignment.id} className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
+                                <div
+                                    key={assignment.id}
+                                    className="flex items-center justify-between rounded-lg border border-border px-4 py-3"
+                                >
                                     <div className="flex items-center gap-3">
-                                        <span className="font-medium text-sm">{assignment.skill.name}</span>
-                                        <Badge variant="secondary">{assignment.skill.skill_category.name}</Badge>
+                                        <span className="text-sm font-medium">
+                                            {assignment.skill.name}
+                                        </span>
+                                        <Badge variant="secondary">
+                                            {
+                                                assignment.skill.skill_category
+                                                    .name
+                                            }
+                                        </Badge>
                                         <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                                             Self-assigned
                                         </Badge>
                                     </div>
                                     <Form
-                                        action={removeSkill.url({ user: auth.user.id, skill: assignment.skill_id })}
+                                        action={removeSkill.url({
+                                            user: auth.user.id,
+                                            skill: assignment.skill_id,
+                                        })}
                                         method="delete"
                                         className="inline"
                                     >
                                         {({ processing }) => (
-                                            <Button variant="outline" size="sm" type="submit" disabled={processing}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                type="submit"
+                                                disabled={processing}
+                                            >
                                                 Remove
                                             </Button>
                                         )}
@@ -169,7 +194,9 @@ export default function Profile({
                             ))}
                         </div>
                     ) : (
-                        <p className="text-sm text-muted-foreground">No self-assigned skills.</p>
+                        <p className="text-sm text-muted-foreground">
+                            No self-assigned skills.
+                        </p>
                     )}
                 </div>
 
@@ -179,22 +206,40 @@ export default function Profile({
                     {privilegedAssigned.length > 0 ? (
                         <div className="space-y-2">
                             {privilegedAssigned.map((assignment) => (
-                                <div key={assignment.id} className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
+                                <div
+                                    key={assignment.id}
+                                    className="flex items-center justify-between rounded-lg border border-border px-4 py-3"
+                                >
                                     <div className="flex items-center gap-3">
-                                        <span className="font-medium text-sm">{assignment.skill.name}</span>
-                                        <Badge variant="secondary">{assignment.skill.skill_category.name}</Badge>
+                                        <span className="text-sm font-medium">
+                                            {assignment.skill.name}
+                                        </span>
+                                        <Badge variant="secondary">
+                                            {
+                                                assignment.skill.skill_category
+                                                    .name
+                                            }
+                                        </Badge>
                                         <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
                                             Assigned by HR
                                         </Badge>
                                     </div>
                                     {canManageSkills && (
                                         <Form
-                                            action={removeSkill.url({ user: auth.user.id, skill: assignment.skill_id })}
+                                            action={removeSkill.url({
+                                                user: auth.user.id,
+                                                skill: assignment.skill_id,
+                                            })}
                                             method="delete"
                                             className="inline"
                                         >
                                             {({ processing }) => (
-                                                <Button variant="outline" size="sm" type="submit" disabled={processing}>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    type="submit"
+                                                    disabled={processing}
+                                                >
                                                     Remove
                                                 </Button>
                                             )}
@@ -204,7 +249,9 @@ export default function Profile({
                             ))}
                         </div>
                     ) : (
-                        <p className="text-sm text-muted-foreground">No skills assigned by HR.</p>
+                        <p className="text-sm text-muted-foreground">
+                            No skills assigned by HR.
+                        </p>
                     )}
                 </div>
 
@@ -222,12 +269,18 @@ export default function Profile({
                                     <div className="grid gap-1">
                                         <select
                                             name="skill_id"
-                                            className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                            className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                         >
-                                            <option value="">Select a skill</option>
+                                            <option value="">
+                                                Select a skill
+                                            </option>
                                             {availableSkills.map((skill) => (
-                                                <option key={skill.id} value={skill.id}>
-                                                    {skill.name} ({skill.skill_category.name})
+                                                <option
+                                                    key={skill.id}
+                                                    value={skill.id}
+                                                >
+                                                    {skill.name} (
+                                                    {skill.skill_category.name})
                                                 </option>
                                             ))}
                                         </select>
