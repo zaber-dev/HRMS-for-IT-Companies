@@ -22,11 +22,22 @@ class ApprovalController extends Controller
     {
         $this->authorize('viewApprovalQueue', LeaveRequest::class);
 
+        $user = auth()->user();
+
         $leaveRequests = $this->approvalService
             ->queueFor(auth()->user())
             ->latest('submitted_at')
             ->paginate(15)
             ->withQueryString();
+
+        $leaveRequests->setCollection(
+            $leaveRequests->getCollection()->map(function (LeaveRequest $leaveRequest) use ($user) {
+                $leaveRequest->setAttribute('canApprove', $user->can('approve', $leaveRequest));
+                $leaveRequest->setAttribute('canReject', $user->can('reject', $leaveRequest));
+
+                return $leaveRequest;
+            })
+        );
 
         return Inertia::render('leave/approvals/index', [
             'leaveRequests' => $leaveRequests,
@@ -34,13 +45,28 @@ class ApprovalController extends Controller
     }
 
     /**
-     * Show the approve confirmation page (GET) or process the approval (POST).
+     * Show the approve confirmation page (GET).
      * Requirements: 2.2, 2.3, 3.2, 3.3, 4.1–4.5, 6.2, 6.3, 8.2, 8.3, 11.5, 11.7
      */
-    public function approve(Request $request, LeaveRequest $leaveRequest): Response|RedirectResponse
+    public function showApprove(LeaveRequest $leaveRequest): Response
+    {
+        $this->authorize('approve', $leaveRequest);
+
+        $leaveRequest->load('user', 'approvalActions.user');
+
+        return Inertia::render('leave/approvals/approve', [
+            'leaveRequest' => $leaveRequest,
+        ]);
+    }
+
+    /**
+     * Process the approval (POST).
+     * Requirements: 2.2, 2.3, 3.2, 3.3, 4.1–4.5, 6.2, 6.3, 8.2, 8.3, 11.5, 11.7
+     */
+    public function approve(Request $request, LeaveRequest $leaveRequest): RedirectResponse
     {
         // Check terminal status before policy to return 422 instead of 403
-        if ($request->isMethod('POST') && $leaveRequest->status->isTerminal()) {
+        if ($leaveRequest->status->isTerminal()) {
             return back()->withErrors([
                 'approve' => __('This leave request is already in a terminal state and cannot be approved.'),
             ])->setStatusCode(422);
@@ -48,15 +74,6 @@ class ApprovalController extends Controller
 
         $this->authorize('approve', $leaveRequest);
 
-        if ($request->isMethod('GET')) {
-            $leaveRequest->load('user', 'approvalActions.user');
-
-            return Inertia::render('leave/approvals/approve', [
-                'leaveRequest' => $leaveRequest,
-            ]);
-        }
-
-        // POST — perform the approval
         $comment = $request->input('comment');
 
         $this->approvalService->approve(auth()->user(), $leaveRequest, $comment);
@@ -65,13 +82,28 @@ class ApprovalController extends Controller
     }
 
     /**
-     * Show the reject form page (GET) or process the rejection (POST).
+     * Show the reject form page (GET).
      * Requirements: 2.4, 2.5, 3.4, 3.5, 4.1–4.5, 6.4, 6.5, 8.4, 8.5, 11.5, 11.7
      */
-    public function reject(Request $request, LeaveRequest $leaveRequest): Response|RedirectResponse
+    public function showReject(LeaveRequest $leaveRequest): Response
+    {
+        $this->authorize('reject', $leaveRequest);
+
+        $leaveRequest->load('user', 'approvalActions.user');
+
+        return Inertia::render('leave/approvals/reject', [
+            'leaveRequest' => $leaveRequest,
+        ]);
+    }
+
+    /**
+     * Process the rejection (POST).
+     * Requirements: 2.4, 2.5, 3.4, 3.5, 4.1–4.5, 6.4, 6.5, 8.4, 8.5, 11.5, 11.7
+     */
+    public function reject(Request $request, LeaveRequest $leaveRequest): RedirectResponse
     {
         // Check terminal status before policy to return 422 instead of 403
-        if ($request->isMethod('POST') && $leaveRequest->status->isTerminal()) {
+        if ($leaveRequest->status->isTerminal()) {
             return back()->withErrors([
                 'reject' => __('This leave request is already in a terminal state and cannot be rejected.'),
             ])->setStatusCode(422);
@@ -79,15 +111,6 @@ class ApprovalController extends Controller
 
         $this->authorize('reject', $leaveRequest);
 
-        if ($request->isMethod('GET')) {
-            $leaveRequest->load('user', 'approvalActions.user');
-
-            return Inertia::render('leave/approvals/reject', [
-                'leaveRequest' => $leaveRequest,
-            ]);
-        }
-
-        // POST — perform the rejection
         $validated = $request->validate([
             'reason' => ['required', 'string'],
         ]);

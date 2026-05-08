@@ -26,9 +26,10 @@ function formatStatus(status: LeaveStatus): string {
 type Props = {
     leaveRequests: PaginatedData<LeaveRequest>;
     filters: { status?: string };
+    canCreate: boolean;
 };
 
-export default function LeaveRequestIndex({ leaveRequests, filters }: Props) {
+export default function LeaveRequestIndex({ leaveRequests, filters, canCreate }: Props) {
     function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
         router.get(leaveIndex.url(), { status: e.target.value || undefined }, { preserveState: true, replace: true });
     }
@@ -40,9 +41,11 @@ export default function LeaveRequestIndex({ leaveRequests, filters }: Props) {
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <Heading title="My Leave Requests" description="View and manage your leave requests" />
-                    <Button asChild>
-                        <Link href={create.url()}>New Leave Request</Link>
-                    </Button>
+                    {canCreate && (
+                        <Button asChild>
+                            <Link href={create.url()}>New Leave Request</Link>
+                        </Button>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-4">

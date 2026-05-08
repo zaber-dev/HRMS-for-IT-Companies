@@ -6,6 +6,7 @@ use App\Models\ApprovalAction;
 use App\Models\LeaveRequest;
 use App\Models\User;
 use Database\Seeders\RoleAndPermissionSeeder;
+use Illuminate\Support\Facades\Route;
 
 beforeEach(function () {
     $this->seed(RoleAndPermissionSeeder::class);
@@ -40,6 +41,25 @@ function approvalRequest(User $submitter, LeaveStatus $status): LeaveRequest
 // ---------------------------------------------------------------------------
 // index — approval queue
 // ---------------------------------------------------------------------------
+
+describe('route mapping', function () {
+    test('approve and reject routes use dedicated controller methods', function () {
+        $approveShow = Route::getRoutes()->getByName('leave-requests.approvals.approve.show');
+        $approvePost = Route::getRoutes()->getByName('leave-requests.approvals.approve');
+        $rejectShow = Route::getRoutes()->getByName('leave-requests.approvals.reject.show');
+        $rejectPost = Route::getRoutes()->getByName('leave-requests.approvals.reject');
+
+        expect($approveShow)->not->toBeNull();
+        expect($approvePost)->not->toBeNull();
+        expect($rejectShow)->not->toBeNull();
+        expect($rejectPost)->not->toBeNull();
+
+        expect($approveShow->getActionMethod())->toBe('showApprove');
+        expect($approvePost->getActionMethod())->toBe('approve');
+        expect($rejectShow->getActionMethod())->toBe('showReject');
+        expect($rejectPost->getActionMethod())->toBe('reject');
+    });
+});
 
 describe('index (approval queue)', function () {
     test('HR can access the approval queue', function () {
@@ -199,6 +219,18 @@ describe('approve POST (happy paths)', function () {
         $superAdmin = approvalUser('super_admin');
         $hr = approvalUser('hr');
         $request = approvalRequest($hr, LeaveStatus::PendingSuperAdmin);
+
+        $this->actingAs($superAdmin)
+            ->post(route('leave-requests.approvals.approve', $request))
+            ->assertRedirect(route('leave-requests.approvals.index'));
+
+        expect($request->fresh()->status)->toBe(LeaveStatus::Approved);
+    });
+
+    test('Super Admin approves HR pending_admin request → status becomes approved', function () {
+        $superAdmin = approvalUser('super_admin');
+        $hr = approvalUser('hr');
+        $request = approvalRequest($hr, LeaveStatus::PendingAdmin);
 
         $this->actingAs($superAdmin)
             ->post(route('leave-requests.approvals.approve', $request))

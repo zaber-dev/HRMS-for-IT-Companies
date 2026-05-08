@@ -182,13 +182,13 @@ describe('canApprove() transition table', function () {
         expect($service->canApprove($superAdmin, $request))->toBeTrue();
     });
 
-    it('denies SuperAdmin on an HR pending_admin request (not yet at super_admin stage)', function () {
+    it('allows SuperAdmin to approve an HR pending_admin request', function () {
         $service = new LeaveApprovalService;
         $superAdmin = makeUser('super_admin');
         $hr = makeUser('hr');
         $request = makeRequest($hr, LeaveStatus::PendingAdmin);
 
-        expect($service->canApprove($superAdmin, $request))->toBeFalse();
+        expect($service->canApprove($superAdmin, $request))->toBeTrue();
     });
 
     it('denies any approver on a terminal approved request', function (string $approverRole) {

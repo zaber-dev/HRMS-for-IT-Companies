@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { index } from '@/actions/App/Http/Controllers/Leave/ApprovalController';
+import { index, showApprove, showReject } from '@/actions/App/Http/Controllers/Leave/ApprovalController';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,11 @@ function formatStatus(status: LeaveStatus): string {
 }
 
 type UserWithRoles = User & { roles?: Role[] };
-type LeaveRequestWithUser = LeaveRequest & { user: UserWithRoles };
+type LeaveRequestWithUser = LeaveRequest & {
+    user: UserWithRoles;
+    canApprove?: boolean;
+    canReject?: boolean;
+};
 
 type Props = {
     leaveRequests: PaginatedData<LeaveRequestWithUser>;
@@ -74,16 +78,20 @@ export default function ApprovalsIndex({ leaveRequests }: Props) {
                                         </td>
                                         <td className="px-4 py-3 text-right">
                                             <div className="flex items-center justify-end gap-2">
-                                                <Button variant="default" size="sm" asChild>
-                                                    <Link href={`/leave-requests/approvals/${request.id}/approve`}>
-                                                        Approve
-                                                    </Link>
-                                                </Button>
-                                                <Button variant="destructive" size="sm" asChild>
-                                                    <Link href={`/leave-requests/approvals/${request.id}/reject`}>
-                                                        Reject
-                                                    </Link>
-                                                </Button>
+                                                {request.canApprove && (
+                                                    <Button variant="default" size="sm" asChild>
+                                                        <Link href={showApprove.url(request)}>
+                                                            Approve
+                                                        </Link>
+                                                    </Button>
+                                                )}
+                                                {request.canReject && (
+                                                    <Button variant="destructive" size="sm" asChild>
+                                                        <Link href={showReject.url(request)}>
+                                                            Reject
+                                                        </Link>
+                                                    </Button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

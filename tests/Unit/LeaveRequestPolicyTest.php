@@ -195,6 +195,14 @@ describe('approve()', function () {
 
         expect($this->policy->approve($superAdmin, $request))->toBeTrue();
     });
+
+    it('returns true when SuperAdmin approves a pending_admin request', function () {
+        $superAdmin = policyUser('super_admin');
+        $hr = policyUser('hr');
+        $request = policyRequest($hr, LeaveStatus::PendingAdmin);
+
+        expect($this->policy->approve($superAdmin, $request))->toBeTrue();
+    });
 });
 
 // ---------------------------------------------------------------------------

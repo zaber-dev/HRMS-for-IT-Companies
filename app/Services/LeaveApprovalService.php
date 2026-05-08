@@ -31,19 +31,18 @@ class LeaveApprovalService
      * Determine whether the approval action is a bypass.
      *
      * For Admin: true when acting on an Employee request not in pending_admin (Admin's normal stage).
-     * For SuperAdmin: true when acting on an Employee request in pending_hr or pending_admin
-     *                 (both are bypass stages for SuperAdmin, whose normal stage is pending_super_admin).
+     * For SuperAdmin: true when acting outside pending_super_admin (any earlier stage).
      */
     public function isBypass(User $approver, LeaveRequest $request): bool
     {
+        if ($approver->hasRole('super_admin')) {
+            return $request->status !== LeaveStatus::PendingSuperAdmin;
+        }
+
         $submitter = $request->user;
 
         if (! $submitter->hasRole('employee')) {
             return false;
-        }
-
-        if ($approver->hasRole('super_admin')) {
-            return in_array($request->status, [LeaveStatus::PendingHr, LeaveStatus::PendingAdmin]);
         }
 
         if ($approver->hasRole('admin')) {
@@ -68,6 +67,10 @@ class LeaveApprovalService
             return false;
         }
 
+        if ($approver->hasRole('super_admin')) {
+            return true;
+        }
+
         $submitter = $request->user;
         $status = $request->status;
 
@@ -90,20 +93,6 @@ class LeaveApprovalService
 
             if ($submitter->hasRole('hr')) {
                 return $status === LeaveStatus::PendingAdmin;
-            }
-
-            return false;
-        }
-
-        // SuperAdmin: can approve Employee requests in pending_hr or pending_admin (bypass),
-        //             and HR or Admin requests in pending_super_admin.
-        if ($approver->hasRole('super_admin')) {
-            if ($submitter->hasRole('employee')) {
-                return $status === LeaveStatus::PendingHr || $status === LeaveStatus::PendingAdmin;
-            }
-
-            if ($submitter->hasRole('hr') || $submitter->hasRole('admin')) {
-                return $status === LeaveStatus::PendingSuperAdmin;
             }
 
             return false;
@@ -208,7 +197,11 @@ class LeaveApprovalService
         }
 
         if ($approver->hasRole('super_admin')) {
-            return $query->where('status', LeaveStatus::PendingSuperAdmin->value);
+            return $query->whereNotIn('status', [
+                LeaveStatus::Approved->value,
+                LeaveStatus::Rejected->value,
+                LeaveStatus::Cancelled->value,
+            ]);
         }
 
         // Fallback: return empty result set

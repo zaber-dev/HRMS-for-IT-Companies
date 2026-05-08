@@ -13,7 +13,7 @@ class LeaveQueueService
      *
      * - `hr`          → count of `pending_hr` requests
      * - `admin`       → count of `pending_admin` requests, excluding requests submitted by other admin users
-     * - `super_admin` → count of `pending_super_admin` requests
+     * - `super_admin` → count of non-terminal requests
      */
     public function get(string $role): int
     {
@@ -28,7 +28,11 @@ class LeaveQueueService
                     ->count();
             })(),
 
-            'super_admin' => LeaveRequest::where('status', LeaveStatus::PendingSuperAdmin)->count(),
+            'super_admin' => LeaveRequest::whereNotIn('status', [
+                LeaveStatus::Approved->value,
+                LeaveStatus::Rejected->value,
+                LeaveStatus::Cancelled->value,
+            ])->count(),
 
             default => 0,
         };

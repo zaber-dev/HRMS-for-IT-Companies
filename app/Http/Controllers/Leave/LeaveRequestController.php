@@ -34,6 +34,7 @@ class LeaveRequestController extends Controller
         return Inertia::render('leave/index', [
             'leaveRequests' => $leaveRequests,
             'filters' => $request->only('status'),
+            'canCreate' => $request->user()->can('create', LeaveRequest::class),
         ]);
     }
 
@@ -106,6 +107,9 @@ class LeaveRequestController extends Controller
             'leaveRequest' => $leaveRequest,
             'canApprove' => $user->can('approve', $leaveRequest),
             'canReject' => $user->can('reject', $leaveRequest),
+            'canSuperApprove' => $user->hasRole('super_admin')
+                && $user->id !== $leaveRequest->user_id
+                && ! $leaveRequest->status->isTerminal(),
         ]);
     }
 

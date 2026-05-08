@@ -96,20 +96,20 @@ test('Admin role does not count pending_hr or pending_super_admin requests', fun
 // Super Admin role
 // ---------------------------------------------------------------------------
 
-test('Super Admin role returns count of pending_super_admin requests only', function () {
+test('Super Admin role returns count of all pending requests', function () {
     $employee = makeQueueUser('employee');
 
     queueLeave($employee, LeaveStatus::PendingSuperAdmin);
     queueLeave($employee, LeaveStatus::PendingSuperAdmin);
-    queueLeave($employee, LeaveStatus::PendingHr);    // should not count
-    queueLeave($employee, LeaveStatus::PendingAdmin); // should not count
+    queueLeave($employee, LeaveStatus::PendingHr);
+    queueLeave($employee, LeaveStatus::PendingAdmin);
 
-    expect($this->service->get('super_admin'))->toBe(2);
+    expect($this->service->get('super_admin'))->toBe(4);
 });
 
-test('Super Admin role returns zero when no pending_super_admin requests exist', function () {
+test('Super Admin role returns zero when no pending requests exist', function () {
     $employee = makeQueueUser('employee');
-    queueLeave($employee, LeaveStatus::PendingHr);
+    queueLeave($employee, LeaveStatus::Approved);
 
     expect($this->service->get('super_admin'))->toBe(0);
 });

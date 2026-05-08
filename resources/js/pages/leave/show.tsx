@@ -1,5 +1,6 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { index, cancel } from '@/actions/App/Http/Controllers/Leave/LeaveRequestController';
+import { showApprove, showReject } from '@/actions/App/Http/Controllers/Leave/ApprovalController';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,9 +28,10 @@ type Props = {
     leaveRequest: LeaveRequest & { user: User; approval_actions: ApprovalAction[] };
     canApprove: boolean;
     canReject: boolean;
+    canSuperApprove: boolean;
 };
 
-export default function LeaveRequestShow({ leaveRequest, canApprove, canReject }: Props) {
+export default function LeaveRequestShow({ leaveRequest, canApprove, canReject, canSuperApprove }: Props) {
     const { auth } = usePage<{ auth: { user: User } }>().props;
     const isOwner = auth.user.id === leaveRequest.user_id;
     const isTerminal = TERMINAL_STATUSES.includes(leaveRequest.status);
@@ -83,16 +85,23 @@ export default function LeaveRequestShow({ leaveRequest, canApprove, canReject }
 
                 {/* Actions */}
                 <div className="flex items-center gap-3">
-                    {canApprove && (
+                    {canApprove && !canSuperApprove && (
                         <Button asChild>
-                            <Link href={`/leave-requests/approvals/${leaveRequest.id}/approve`}>
+                            <Link href={showApprove.url(leaveRequest)}>
                                 Approve
+                            </Link>
+                        </Button>
+                    )}
+                    {canSuperApprove && (
+                        <Button asChild>
+                            <Link href={showApprove.url(leaveRequest)}>
+                                Super Admin Approve
                             </Link>
                         </Button>
                     )}
                     {canReject && (
                         <Button variant="destructive" asChild>
-                            <Link href={`/leave-requests/approvals/${leaveRequest.id}/reject`}>
+                            <Link href={showReject.url(leaveRequest)}>
                                 Reject
                             </Link>
                         </Button>
