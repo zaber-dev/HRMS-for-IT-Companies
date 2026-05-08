@@ -67,8 +67,8 @@ class EmployeeDashboardService
                 'projects.id as project_id,
                  projects.name as project_name,
                  project_assignments.task_description,
-                 project_assignments.task_deadline,
-                 CAST(julianday(project_assignments.task_deadline) - julianday(?) AS INTEGER) as days_remaining',
+                 DATE(project_assignments.task_deadline) as task_deadline,
+                 CAST(julianday(DATE(project_assignments.task_deadline)) - julianday(?) AS INTEGER) as days_remaining',
                 [$today]
             )
             ->orderByRaw('days_remaining ASC')
@@ -102,7 +102,7 @@ class EmployeeDashboardService
         $projects = DB::table('projects')
             ->join('project_assignments', 'projects.id', '=', 'project_assignments.project_id')
             ->where('project_assignments.user_id', $employee->id)
-            ->select('projects.id as project_id', 'projects.name', 'projects.status', 'projects.deadline')
+            ->selectRaw('projects.id as project_id, projects.name, projects.status, DATE(projects.deadline) as deadline')
             ->distinct()
             ->get();
 
@@ -154,7 +154,7 @@ class EmployeeDashboardService
             ->where('user_id', $employee->id)
             ->orderByDesc('submitted_at')
             ->orderByDesc('id')
-            ->select('id', 'status', 'start_date', 'end_date')
+            ->selectRaw('id, status, DATE(start_date) as start_date, DATE(end_date) as end_date')
             ->first();
 
         $mostRecent = $mostRecentRow ? [

@@ -35,8 +35,8 @@ class DeadlineAlertService
                  projects.id as project_id,
                  projects.name as project_name,
                  project_assignments.task_description,
-                 project_assignments.task_deadline,
-                 CAST(julianday(?) - julianday(project_assignments.task_deadline) AS INTEGER) as days_overdue',
+                 DATE(project_assignments.task_deadline) as task_deadline,
+                 CAST(julianday(?) - julianday(DATE(project_assignments.task_deadline)) AS INTEGER) as days_overdue',
                 [$today]
             )
             ->orderByDesc('days_overdue')
