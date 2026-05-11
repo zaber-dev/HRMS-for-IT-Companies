@@ -9,6 +9,21 @@ use App\Models\User;
 class ProjectAssignmentPolicy
 {
     /**
+     * Determine whether the user can view the assignment.
+     * Assigned employee and privileged roles can view.
+     */
+    public function view(User $user, ProjectAssignment $assignment): bool
+    {
+        // Assigned employee can view their own assignment
+        if ($user->id === $assignment->user_id) {
+            return true;
+        }
+
+        // Privileged roles can view any assignment
+        return $user->hasRole(['hr', 'admin', 'super_admin']);
+    }
+
+    /**
      * Determine whether the user can create assignments for the given project.
      * Requirements: 5.8, 12.2
      */
