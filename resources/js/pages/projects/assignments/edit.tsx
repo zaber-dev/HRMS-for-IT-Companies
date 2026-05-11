@@ -9,6 +9,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { formatDate } from '@/lib/utils';
 import type { User } from '@/types/auth';
 import type { Project, ProjectAssignment } from '@/types/projects';
 
@@ -63,9 +64,7 @@ export default function AssignmentEdit({ project, assignment }: Props) {
                             Task Deadline{' '}
                             <span className="text-xs text-muted-foreground">
                                 (must be on or before{' '}
-                                {new Date(
-                                    project.deadline,
-                                ).toLocaleDateString()}
+                                {formatDate(project.deadline)}
                                 )
                             </span>
                         </Label>

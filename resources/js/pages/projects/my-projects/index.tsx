@@ -8,6 +8,7 @@ import { show as assignmentShow } from '@/actions/App/Http/Controllers/Projects/
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { formatDate } from '@/lib/utils';
 import type { Auth } from '@/types/auth';
 import type {
     BenchStatus,
@@ -165,17 +166,17 @@ export default function MyProjectsIndex({ assignments }: Props) {
                                         </Badge>
                                     </td>
                                     <td className="px-4 py-3 text-muted-foreground">
-                                        {new Date(
+                                        {formatDate(
                                             assignment.project.deadline,
-                                        ).toLocaleDateString()}
+                                        )}
                                     </td>
                                     <td className="max-w-xs truncate px-4 py-3 text-muted-foreground">
                                         {assignment.task_description}
                                     </td>
                                     <td className="px-4 py-3 text-muted-foreground">
-                                        {new Date(
+                                        {formatDate(
                                             assignment.task_deadline,
-                                        ).toLocaleDateString()}
+                                        )}
                                     </td>
                                     <td className="px-4 py-3">
                                         <Badge

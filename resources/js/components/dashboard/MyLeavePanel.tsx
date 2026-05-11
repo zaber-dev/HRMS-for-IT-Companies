@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { index as leaveIndex } from '@/actions/App/Http/Controllers/Leave/LeaveRequestController';
 import { Badge } from '@/components/ui/badge';
+import { formatDateRange } from '@/lib/utils';
 import type { DashboardProps } from '@/types/dashboard';
 import type { LeaveStatus } from '@/types/leave';
 
@@ -70,7 +71,10 @@ export function MyLeavePanel({
                         className="flex items-center justify-between rounded-md border border-border bg-background p-3 transition-colors hover:bg-muted/30"
                     >
                         <span className="text-sm text-muted-foreground">
-                            {most_recent.start_date} – {most_recent.end_date}
+                            {formatDateRange(
+                                most_recent.start_date,
+                                most_recent.end_date,
+                            )}
                         </span>
                         <Badge className={statusBadgeClass(most_recent.status)}>
                             {formatStatus(most_recent.status)}

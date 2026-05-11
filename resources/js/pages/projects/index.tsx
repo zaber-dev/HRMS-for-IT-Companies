@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { formatDate } from '@/lib/utils';
 import type { PaginatedData } from '@/types';
 import type { Project, ProjectStatus } from '@/types/projects';
 
@@ -150,9 +151,7 @@ export default function ProjectsIndex({ projects, filters, canManageProjects }: 
                                         </Badge>
                                     </td>
                                     <td className="px-4 py-3 text-muted-foreground">
-                                        {new Date(
-                                            project.deadline,
-                                        ).toLocaleDateString()}
+                                        {formatDate(project.deadline)}
                                     </td>
                                     <td className="px-4 py-3 text-muted-foreground">
                                         {project.skills_count}

@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { edit as userEdit } from '@/actions/App/Http/Controllers/Admin/UserController';
+import { formatDate } from '@/lib/utils';
 import type { DashboardProps } from '@/types/dashboard';
 
 type Props = NonNullable<DashboardProps['personalStats']> & { userId: number };
@@ -63,7 +64,7 @@ export function PersonalStatsPanel({
                         Member since
                     </span>
                     <span className="text-sm text-muted-foreground">
-                        {new Date(created_at).toLocaleDateString()}
+                        {formatDate(created_at)}
                     </span>
                 </div>
             </div>

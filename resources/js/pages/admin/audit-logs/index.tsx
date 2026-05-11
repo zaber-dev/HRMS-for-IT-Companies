@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { index } from '@/actions/App/Http/Controllers/Admin/AuditLogController';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
+import { formatDateTime, formatRelative } from '@/lib/utils';
 import type { AuditLog } from '@/types/auth';
 
 type PaginatedLogs = {
@@ -18,16 +19,6 @@ type PaginatedLogs = {
 type Props = {
     logs: PaginatedLogs;
 };
-
-function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
-}
 
 function formatAuditableType(type: string): string {
     return type.split('\\').pop() ?? type;
@@ -69,7 +60,9 @@ export default function AuditLogsIndex({ logs }: Props) {
                                     className="bg-background transition-colors hover:bg-muted/30"
                                 >
                                     <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
-                                        {formatDate(log.created_at)}
+                                        <span title={formatDateTime(log.created_at)}>
+                                            {formatRelative(log.created_at)}
+                                        </span>
                                     </td>
                                     <td className="px-4 py-3">
                                         {log.actor ? (

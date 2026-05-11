@@ -7,6 +7,7 @@ import {
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { formatDateRange } from '@/lib/utils';
 import type {
     LeaveRequest,
     LeaveStatus,
@@ -103,8 +104,10 @@ export default function ApprovalsIndex({ leaveRequests }: Props) {
                                             </Badge>
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
-                                            {request.start_date} –{' '}
-                                            {request.end_date}
+                                            {formatDateRange(
+                                                request.start_date,
+                                                request.end_date,
+                                            )}
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
                                             {request.reason ? (

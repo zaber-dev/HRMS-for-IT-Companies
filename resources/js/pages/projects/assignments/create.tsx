@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { formatDate } from '@/lib/utils';
 import type { BenchStatus, Project } from '@/types/projects';
 import type { Skill } from '@/types/skills';
 
@@ -298,9 +299,7 @@ export default function AssignmentCreate({
                                 Task Deadline{' '}
                                 <span className="text-xs text-muted-foreground">
                                     (must be on or before{' '}
-                                    {new Date(
-                                        project.deadline,
-                                    ).toLocaleDateString()}
+                                    {formatDate(project.deadline)}
                                     )
                                 </span>
                             </Label>

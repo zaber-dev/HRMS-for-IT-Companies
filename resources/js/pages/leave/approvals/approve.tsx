@@ -4,6 +4,7 @@ import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { formatDate } from '@/lib/utils';
 import type { LeaveRequest, LeaveStatus, User } from '@/types';
 
 function statusBadgeClass(status: LeaveStatus): string {
@@ -75,13 +76,13 @@ export default function ApproveConfirmation({ leaveRequest }: Props) {
                                 Start Date
                             </dt>
                             <dd className="mt-1 font-medium">
-                                {leaveRequest.start_date}
+                                {formatDate(leaveRequest.start_date)}
                             </dd>
                         </div>
                         <div>
                             <dt className="text-muted-foreground">End Date</dt>
                             <dd className="mt-1 font-medium">
-                                {leaveRequest.end_date}
+                                {formatDate(leaveRequest.end_date)}
                             </dd>
                         </div>
                         <div className="col-span-2">

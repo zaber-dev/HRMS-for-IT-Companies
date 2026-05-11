@@ -10,6 +10,7 @@ import { markComplete } from '@/actions/App/Http/Controllers/Projects/MyProjectC
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { formatDate } from '@/lib/utils';
 import type { Auth } from '@/types/auth';
 import type {
     Project,
@@ -178,9 +179,7 @@ export default function AssignmentShow({ project, assignment }: Props) {
                                 Task Deadline
                             </p>
                             <p className="mt-1 text-sm">
-                                {new Date(
-                                    assignment.task_deadline,
-                                ).toLocaleDateString()}
+                                {formatDate(assignment.task_deadline)}
                             </p>
                         </div>
 
@@ -211,7 +210,7 @@ export default function AssignmentShow({ project, assignment }: Props) {
                             <p className="font-medium">{project.name}</p>
                             <p className="text-sm text-muted-foreground">
                                 Deadline:{' '}
-                                {new Date(project.deadline).toLocaleDateString()}
+                                {formatDate(project.deadline)}
                             </p>
                         </div>
                         <Button variant="outline" size="sm" asChild>

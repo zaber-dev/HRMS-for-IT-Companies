@@ -14,6 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { formatDateRange, formatDateTime, formatRelative } from '@/lib/utils';
 import type {
     LeaveRequest,
     LeaveStatus,
@@ -230,8 +231,10 @@ export default function AllLeaveRequests({
                                             </Badge>
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
-                                            {request.start_date} –{' '}
-                                            {request.end_date}
+                                            {formatDateRange(
+                                                request.start_date,
+                                                request.end_date,
+                                            )}
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
                                             {request.reason ? (
@@ -259,9 +262,9 @@ export default function AllLeaveRequests({
                                             </Badge>
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
-                                            {new Date(
-                                                request.submitted_at,
-                                            ).toLocaleDateString()}
+                                            <span title={formatDateTime(request.submitted_at)}>
+                                                {formatRelative(request.submitted_at)}
+                                            </span>
                                         </td>
                                         <td className="px-4 py-3 text-right">
                                             <Button

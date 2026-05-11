@@ -10,6 +10,11 @@ import {
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    formatDate,
+    formatDateTime,
+    formatRelative,
+} from '@/lib/utils';
 import type { ApprovalAction, LeaveRequest, LeaveStatus, User } from '@/types';
 
 const TERMINAL_STATUSES: LeaveStatus[] = ['approved', 'rejected', 'cancelled'];
@@ -99,13 +104,13 @@ export default function LeaveRequestShow({
                                 Start Date
                             </dt>
                             <dd className="mt-1 font-medium">
-                                {leaveRequest.start_date}
+                                {formatDate(leaveRequest.start_date)}
                             </dd>
                         </div>
                         <div>
                             <dt className="text-muted-foreground">End Date</dt>
                             <dd className="mt-1 font-medium">
-                                {leaveRequest.end_date}
+                                {formatDate(leaveRequest.end_date)}
                             </dd>
                         </div>
                         <div className="col-span-2">
@@ -123,9 +128,9 @@ export default function LeaveRequestShow({
                                 Submitted At
                             </dt>
                             <dd className="mt-1 font-medium">
-                                {new Date(
-                                    leaveRequest.submitted_at,
-                                ).toLocaleString()}
+                                <span title={formatDateTime(leaveRequest.submitted_at)}>
+                                    {formatRelative(leaveRequest.submitted_at)}
+                                </span>
                             </dd>
                         </div>
                     </dl>
@@ -215,9 +220,9 @@ export default function LeaveRequestShow({
                                                 )}
                                             </div>
                                             <span className="text-xs text-muted-foreground">
-                                                {new Date(
-                                                    action.created_at,
-                                                ).toLocaleString()}
+                                                <span title={formatDateTime(action.created_at)}>
+                                                    {formatRelative(action.created_at)}
+                                                </span>
                                             </span>
                                         </div>
                                         {action.comment && (
