@@ -32,6 +32,7 @@ const statusOptions = [
 type Props = {
     projects: PaginatedData<Project & { skills_count: number }>;
     filters: { status?: string };
+    canManageProjects: boolean;
 };
 
 function statusBadgeClass(status: ProjectStatus): string {
@@ -55,7 +56,7 @@ function formatStatus(status: ProjectStatus): string {
     return status.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export default function ProjectsIndex({ projects, filters }: Props) {
+export default function ProjectsIndex({ projects, filters, canManageProjects }: Props) {
     const [status, setStatus] = useState(filters.status ?? '');
 
     function handleStatusChange(value: string) {
@@ -79,9 +80,11 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                         title="Projects"
                         description="Manage projects and team assignments"
                     />
-                    <Button asChild>
-                        <Link href={create.url()}>New Project</Link>
-                    </Button>
+                    {canManageProjects && (
+                        <Button asChild>
+                            <Link href={create.url()}>New Project</Link>
+                        </Button>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -165,28 +168,32 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                                                     View
                                                 </Link>
                                             </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                asChild
-                                            >
-                                                <Link href={edit.url(project)}>
-                                                    Edit
-                                                </Link>
-                                            </Button>
-                                            <Button
-                                                variant="destructive"
-                                                size="sm"
-                                                asChild
-                                            >
-                                                <Link
-                                                    href={deleteMethod.url(
-                                                        project,
-                                                    )}
-                                                >
-                                                    Delete
-                                                </Link>
-                                            </Button>
+                                            {canManageProjects && (
+                                                <>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        asChild
+                                                    >
+                                                        <Link href={edit.url(project)}>
+                                                            Edit
+                                                        </Link>
+                                                    </Button>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        asChild
+                                                    >
+                                                        <Link
+                                                            href={deleteMethod.url(
+                                                                project,
+                                                            )}
+                                                        >
+                                                            Delete
+                                                        </Link>
+                                                    </Button>
+                                                </>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>

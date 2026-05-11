@@ -24,6 +24,7 @@ Route::middleware(['auth', 'verified', EnsureUserIsActive::class, EnsurePassword
             Route::prefix('/{project}/assignments')->name('assignments.')->group(function () {
                 Route::get('/create', [ProjectAssignmentController::class, 'create'])->name('create');
                 Route::post('/', [ProjectAssignmentController::class, 'store'])->name('store');
+                Route::get('/{assignment}', [ProjectAssignmentController::class, 'show'])->name('show');
                 Route::get('/{assignment}/edit', [ProjectAssignmentController::class, 'edit'])->name('edit');
                 Route::put('/{assignment}', [ProjectAssignmentController::class, 'update'])->name('update');
                 Route::delete('/{assignment}', [ProjectAssignmentController::class, 'destroy'])->name('destroy');

@@ -4,6 +4,7 @@ import {
     markComplete,
 } from '@/actions/App/Http/Controllers/Projects/MyProjectController';
 import { show } from '@/actions/App/Http/Controllers/Projects/ProjectController';
+import { show as assignmentShow } from '@/actions/App/Http/Controllers/Projects/ProjectAssignmentController';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -189,9 +190,25 @@ export default function MyProjectsIndex({ assignments }: Props) {
                                         </Badge>
                                     </td>
                                     <td className="px-4 py-3 text-right">
-                                        <MarkCompleteButton
-                                            assignment={assignment}
-                                        />
+                                        <div className="flex items-center justify-end gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                asChild
+                                            >
+                                                <Link
+                                                    href={assignmentShow({
+                                                        project: assignment.project_id,
+                                                        assignment: assignment.id,
+                                                    })}
+                                                >
+                                                    View Task
+                                                </Link>
+                                            </Button>
+                                            <MarkCompleteButton
+                                                assignment={assignment}
+                                            />
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

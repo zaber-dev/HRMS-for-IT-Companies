@@ -18,6 +18,22 @@ use Inertia\Response;
 class ProjectAssignmentController extends Controller
 {
     /**
+     * Display the specified assignment.
+     * Requirements: 5.1, 5.2
+     */
+    public function show(Project $project, ProjectAssignment $assignment): Response
+    {
+        $this->authorize('view', $assignment);
+
+        $assignment->load('user');
+
+        return Inertia::render('projects/assignments/show', [
+            'project' => $project,
+            'assignment' => $assignment,
+        ]);
+    }
+
+    /**
      * Show the form for creating a new assignment, with employee suggestions.
      * Requirements: 5.1, 5.2, 9.1–9.5
      */

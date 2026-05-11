@@ -37,6 +37,7 @@ class ProjectController extends Controller
             'filters' => [
                 'status' => $request->input('status'),
             ],
+            'canManageProjects' => auth()->user()->hasRole(['super_admin', 'admin', 'hr']),
         ]);
     }
 

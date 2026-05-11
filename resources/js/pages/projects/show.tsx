@@ -1,6 +1,7 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import {
     create as assignmentCreate,
+    show as assignmentShow,
     edit as assignmentEdit,
     destroy as assignmentDestroy,
 } from '@/actions/App/Http/Controllers/Projects/ProjectAssignmentController';
@@ -260,7 +261,15 @@ export default function ProjectShow({ project }: Props) {
                                         className="bg-background transition-colors hover:bg-muted/30"
                                     >
                                         <td className="px-4 py-3 font-medium">
-                                            {assignment.user.name}
+                                            <Link
+                                                href={assignmentShow({
+                                                    project: project.id,
+                                                    assignment: assignment.id,
+                                                })}
+                                                className="hover:underline"
+                                            >
+                                                {assignment.user.name}
+                                            </Link>
                                         </td>
                                         <td className="px-4 py-3">
                                             <Badge
@@ -298,6 +307,20 @@ export default function ProjectShow({ project }: Props) {
                                         {isPrivileged && (
                                             <td className="px-4 py-3 text-right">
                                                 <div className="flex items-center justify-end gap-2">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        asChild
+                                                    >
+                                                        <Link
+                                                            href={assignmentShow({
+                                                                project: project.id,
+                                                                assignment: assignment.id,
+                                                            })}
+                                                        >
+                                                            View
+                                                        </Link>
+                                                    </Button>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
