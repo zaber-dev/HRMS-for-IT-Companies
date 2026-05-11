@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AssignmentSource;
 use App\Models\Skill;
 use App\Models\SkillAssignment;
 use App\Models\SkillCategory;
@@ -379,6 +380,42 @@ describe('filters', function () {
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->where('skills.total', 5)
+            );
+    });
+});
+
+// ---------------------------------------------------------------------------
+// Assignment props
+// ---------------------------------------------------------------------------
+
+describe('assignment props', function () {
+    test('index includes only the current user assignment source', function () {
+        $employee = skillUser('employee');
+        $otherEmployee = skillUser('employee');
+        $skill = Skill::factory()->create();
+
+        SkillAssignment::factory()->create([
+            'user_id' => $employee->id,
+            'skill_id' => $skill->id,
+            'source' => AssignmentSource::Self,
+        ]);
+
+        SkillAssignment::factory()->privileged()->create([
+            'user_id' => $otherEmployee->id,
+            'skill_id' => $skill->id,
+        ]);
+
+        $this->withoutVite()
+            ->actingAs($employee)
+            ->get(route('skills.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('skills/index')
+                ->has('skills.data', 1)
+                ->where('skills.data.0.id', $skill->id)
+                ->has('skills.data.0.assignments', 1)
+                ->where('skills.data.0.assignments.0.user_id', $employee->id)
+                ->where('skills.data.0.assignments.0.source', AssignmentSource::Self->value)
             );
     });
 });

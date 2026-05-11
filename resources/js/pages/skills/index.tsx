@@ -1,4 +1,4 @@
-import { Form, Head, Link, router } from '@inertiajs/react';
+import { Form, Head, Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import {
     index,
@@ -8,6 +8,10 @@ import {
     destroy,
     toggle,
 } from '@/actions/App/Http/Controllers/Skills/SkillController';
+import {
+    store as assignSkill,
+    destroy as removeSkill,
+} from '@/actions/App/Http/Controllers/Skills/SkillAssignmentController';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,10 +22,18 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import type { PaginatedData, Skill, SkillCategory } from '@/types';
+import type {
+    Auth,
+    PaginatedData,
+    Skill,
+    SkillAssignment,
+    SkillCategory,
+} from '@/types';
 
 type Props = {
-    skills: PaginatedData<Skill & { skill_category: SkillCategory }>;
+    skills: PaginatedData<
+        Skill & { skill_category: SkillCategory; assignments?: SkillAssignment[] }
+    >;
     categories: SkillCategory[];
     filters: { category?: number; is_active?: string };
     canManageSkills: boolean;
@@ -39,8 +51,10 @@ export default function SkillsIndex({
     filters,
     canManageSkills,
 }: Props) {
+    const { auth } = usePage<{ auth: Auth }>().props;
     const [category, setCategory] = useState<string>(filters.category ? String(filters.category) : '');
     const [isActive, setIsActive] = useState<string>(filters.is_active ?? '');
+    const canSelfAssign = !canManageSkills;
 
     function handleCategoryChange(value: string) {
         setCategory(value);
@@ -139,6 +153,11 @@ export default function SkillsIndex({
                                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                                     Status
                                 </th>
+                                {canSelfAssign && (
+                                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+                                        My Skill
+                                    </th>
+                                )}
                                 {canManageSkills && (
                                     <th className="px-4 py-3 text-right font-medium text-muted-foreground">
                                         Actions
@@ -190,6 +209,90 @@ export default function SkillsIndex({
                                             </Badge>
                                         )}
                                     </td>
+                                    {canSelfAssign && (
+                                        <td className="px-4 py-3 text-right">
+                                            {(() => {
+                                                const currentAssignment =
+                                                    skill.assignments?.[0];
+                                                const isPrivilegedAssignment =
+                                                    currentAssignment?.source ===
+                                                    'privileged';
+
+                                                if (isPrivilegedAssignment) {
+                                                    return (
+                                                        <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
+                                                            Assigned by HR
+                                                        </Badge>
+                                                    );
+                                                }
+
+                                                if (currentAssignment) {
+                                                    return (
+                                                        <Form
+                                                            action={removeSkill.url({
+                                                                user: auth.user.id,
+                                                                skill: skill.id,
+                                                            })}
+                                                            method="delete"
+                                                            className="inline"
+                                                        >
+                                                            {({ processing }) => (
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    type="submit"
+                                                                    disabled={
+                                                                        processing
+                                                                    }
+                                                                >
+                                                                    Remove
+                                                                </Button>
+                                                            )}
+                                                        </Form>
+                                                    );
+                                                }
+
+                                                if (!skill.is_active) {
+                                                    return (
+                                                        <span className="text-xs text-muted-foreground">
+                                                            Unavailable
+                                                        </span>
+                                                    );
+                                                }
+
+                                                return (
+                                                    <Form
+                                                        action={assignSkill.url(
+                                                            auth.user.id,
+                                                        )}
+                                                        method="post"
+                                                        className="inline"
+                                                    >
+                                                        {({ processing }) => (
+                                                            <>
+                                                                <input
+                                                                    type="hidden"
+                                                                    name="skill_id"
+                                                                    value={
+                                                                        skill.id
+                                                                    }
+                                                                />
+                                                                <Button
+                                                                    size="sm"
+                                                                    type="submit"
+                                                                    disabled={
+                                                                        processing
+                                                                    }
+                                                                >
+                                                                    Add
+                                                                </Button>
+                                                            </>
+                                                        )}
+                                                    </Form>
+                                                );
+                                            })()}
+                                        </td>
+                                    )}
                                     {canManageSkills && (
                                         <td className="px-4 py-3 text-right">
                                             <div className="flex items-center justify-end gap-2">
@@ -255,7 +358,13 @@ export default function SkillsIndex({
                             {skills.data.length === 0 && (
                                 <tr>
                                     <td
-                                        colSpan={canManageSkills ? 5 : 4}
+                                        colSpan={
+                                            canManageSkills && canSelfAssign
+                                                ? 6
+                                                : canManageSkills || canSelfAssign
+                                                  ? 5
+                                                  : 4
+                                        }
                                         className="px-4 py-8 text-center text-muted-foreground"
                                     >
                                         No skills found.

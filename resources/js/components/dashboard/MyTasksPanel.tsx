@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { show as projectShow } from '@/actions/App/Http/Controllers/Projects/ProjectController';
+import { show as assignmentShow } from '@/actions/App/Http/Controllers/Projects/ProjectAssignmentController';
 import type { DashboardProps } from '@/types/dashboard';
 
 type Props = {
@@ -27,7 +27,10 @@ export function MyTasksPanel({ tasks }: Props) {
                             >
                                 <div className="min-w-0 flex-1">
                                     <Link
-                                        href={projectShow.url(task.project_id)}
+                                        href={assignmentShow({
+                                            project: task.project_id,
+                                            assignment: task.assignment_id,
+                                        })}
                                         className="text-sm font-medium hover:underline"
                                     >
                                         {task.project_name}

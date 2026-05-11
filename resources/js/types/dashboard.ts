@@ -42,6 +42,7 @@ export type DashboardProps = {
         created_at: string;
     };
     myTasks?: Array<{
+        assignment_id: number;
         project_id: number;
         project_name: string;
         task_description: string;

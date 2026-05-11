@@ -52,12 +52,11 @@ export function PersonalStatsPanel({
                     <span className="text-sm text-muted-foreground">
                         Skills
                     </span>
-                    <Link
-                        href={userEdit.url(userId)}
-                        className="font-medium text-primary hover:underline"
+                    <span
+                        className="font-medium text-primary"
                     >
                         {skills_count} skill{skills_count !== 1 ? 's' : ''}
-                    </Link>
+                    </span>
                 </div>
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">

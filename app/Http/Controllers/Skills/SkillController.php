@@ -20,7 +20,12 @@ class SkillController extends Controller
     {
         $this->authorize('viewAny', Skill::class);
 
-        $query = Skill::with('skillCategory');
+        $user = $request->user();
+
+        $query = Skill::with([
+            'skillCategory',
+            'assignments' => fn ($assignmentQuery) => $assignmentQuery->where('user_id', $user->id),
+        ]);
 
         if ($request->filled('category')) {
             $query->where('skill_category_id', $request->input('category'));

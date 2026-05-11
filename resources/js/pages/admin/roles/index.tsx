@@ -1,4 +1,4 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { index as permissionsIndex } from '@/actions/App/Http/Controllers/Admin/PermissionController';
 import {
     index,
@@ -10,13 +10,27 @@ import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import type { Role } from '@/types/auth';
 
-const BUILT_IN_ROLES = ['super_admin', 'admin', 'hr', 'employee'];
+// Role hierarchy levels (higher = more privilege)
+const ROLE_LEVELS: Record<string, number> = {
+    super_admin: 4,
+    admin: 3,
+    hr: 2,
+    employee: 1,
+};
+
+function getRoleLevel(roleName: string): number {
+    return ROLE_LEVELS[roleName] ?? 0;
+}
 
 type Props = {
     roles: Role[];
+    userRoleLevel: number;
+    builtInRoles: string[];
 };
 
-export default function RolesIndex({ roles }: Props) {
+export default function RolesIndex({ roles, userRoleLevel, builtInRoles }: Props) {
+    const canCreateRoles = userRoleLevel >= 3; // Admin and above can create roles
+
     return (
         <>
             <Head title="Roles" />
@@ -27,9 +41,11 @@ export default function RolesIndex({ roles }: Props) {
                         title="Roles"
                         description="Manage roles and their permissions"
                     />
-                    <Button asChild>
-                        <Link href={create.url()}>Create role</Link>
-                    </Button>
+                    {canCreateRoles && (
+                        <Button asChild>
+                            <Link href={create.url()}>Create role</Link>
+                        </Button>
+                    )}
                 </div>
 
                 <div className="overflow-hidden rounded-lg border border-border">
@@ -52,9 +68,10 @@ export default function RolesIndex({ roles }: Props) {
                         </thead>
                         <tbody className="divide-y divide-border">
                             {roles.map((role) => {
-                                const isBuiltIn = BUILT_IN_ROLES.includes(
-                                    role.name,
-                                );
+                                const isBuiltIn = builtInRoles.includes(role.name);
+                                const roleLevel = getRoleLevel(role.name);
+                                const canManageRole = userRoleLevel >= roleLevel; // Can manage roles at or below own level
+                                const canEditRole = canManageRole && !isBuiltIn; // Can edit if can manage and not built-in
 
                                 return (
                                     <tr
@@ -77,49 +94,49 @@ export default function RolesIndex({ roles }: Props) {
                                         </td>
                                         <td className="px-4 py-3 text-right">
                                             <div className="flex items-center justify-end gap-2">
+                                                {/* Manage Permissions - disabled for built-in roles or roles above user's level */}
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
                                                     asChild
+                                                    disabled={isBuiltIn || !canManageRole}
+                                                    title={
+                                                        isBuiltIn
+                                                            ? 'Built-in roles have fixed permissions'
+                                                            : !canManageRole
+                                                              ? 'You cannot manage permissions for roles above your level'
+                                                              : undefined
+                                                    }
                                                 >
                                                     <Link
-                                                        href={permissionsIndex.url(
-                                                            role,
-                                                        )}
+                                                        href={permissionsIndex.url(role)}
+                                                        className={
+                                                            isBuiltIn || !canManageRole
+                                                                ? 'pointer-events-none'
+                                                                : ''
+                                                        }
                                                     >
                                                         Manage Permissions
                                                     </Link>
                                                 </Button>
-                                                {!isBuiltIn && (
+                                                {canEditRole && (
                                                     <>
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
                                                             asChild
                                                         >
-                                                            <Link
-                                                                href={edit.url(
-                                                                    role,
-                                                                )}
-                                                            >
+                                                            <Link href={edit.url(role)}>
                                                                 Edit
                                                             </Link>
                                                         </Button>
-                                                        <Form
-                                                            {...destroy.form(
-                                                                role,
-                                                            )}
-                                                        >
-                                                            {({
-                                                                processing,
-                                                            }) => (
+                                                        <Form {...destroy.form(role)}>
+                                                            {({ processing }) => (
                                                                 <Button
                                                                     type="submit"
                                                                     variant="destructive"
                                                                     size="sm"
-                                                                    disabled={
-                                                                        processing
-                                                                    }
+                                                                    disabled={processing}
                                                                 >
                                                                     Delete
                                                                 </Button>

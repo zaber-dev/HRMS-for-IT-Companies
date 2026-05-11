@@ -1,14 +1,18 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, usePage } from '@inertiajs/react';
 import {
     index,
     edit,
     destroy,
     toggle,
 } from '@/actions/App/Http/Controllers/Skills/SkillController';
+import {
+    store as assignSkill,
+    destroy as removeSkill,
+} from '@/actions/App/Http/Controllers/Skills/SkillAssignmentController';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import type { Skill, SkillAssignment, SkillCategory, User } from '@/types';
+import type { Auth, Skill, SkillAssignment, SkillCategory, User } from '@/types';
 
 type Props = {
     skill: Skill & {
@@ -21,6 +25,14 @@ type Props = {
 };
 
 export default function SkillShow({ skill, canManageSkills }: Props) {
+    const { auth } = usePage<{ auth: Auth }>().props;
+    const canSelfAssign = !canManageSkills;
+    const currentAssignment = skill.assignments.find(
+        (assignment) => assignment.user_id === auth.user.id,
+    );
+    const isPrivilegedAssignment =
+        currentAssignment?.source === 'privileged';
+
     return (
         <>
             <Head title={skill.name} />
@@ -133,6 +145,64 @@ export default function SkillShow({ skill, canManageSkills }: Props) {
                         <Button variant="outline" asChild>
                             <Link href={index.url()}>Back to Skills</Link>
                         </Button>
+                    </div>
+                )}
+
+                {canSelfAssign && (
+                    <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium">
+                            My Skill
+                        </span>
+                        {isPrivilegedAssignment && (
+                            <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
+                                Assigned by HR
+                            </Badge>
+                        )}
+                        {!isPrivilegedAssignment && currentAssignment && (
+                            <Form
+                                action={removeSkill.url({
+                                    user: auth.user.id,
+                                    skill: skill.id,
+                                })}
+                                method="delete"
+                                className="inline"
+                            >
+                                {({ processing }) => (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        type="submit"
+                                        disabled={processing}
+                                    >
+                                        Remove
+                                    </Button>
+                                )}
+                            </Form>
+                        )}
+                        {!isPrivilegedAssignment && !currentAssignment && (
+                            <Form
+                                action={assignSkill.url(auth.user.id)}
+                                method="post"
+                                className="inline"
+                            >
+                                {({ processing }) => (
+                                    <>
+                                        <input
+                                            type="hidden"
+                                            name="skill_id"
+                                            value={skill.id}
+                                        />
+                                        <Button
+                                            size="sm"
+                                            type="submit"
+                                            disabled={processing || !skill.is_active}
+                                        >
+                                            Add
+                                        </Button>
+                                    </>
+                                )}
+                            </Form>
+                        )}
                     </div>
                 )}
 

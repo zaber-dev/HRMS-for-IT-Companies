@@ -53,7 +53,7 @@ class EmployeeDashboardService
      * Pending assignments with days_remaining (positive = future, negative = overdue).
      * Sorted: overdue first (most negative), then ascending by nearest deadline.
      *
-     * @return array<int, array{project_id: int, project_name: string, task_description: string, task_deadline: string, days_remaining: int}>
+     * @return array<int, array{assignment_id: int, project_id: int, project_name: string, task_description: string, task_deadline: string, days_remaining: int}>
      */
     private function getMyTasks(User $employee): array
     {
@@ -64,7 +64,8 @@ class EmployeeDashboardService
             ->where('project_assignments.user_id', $employee->id)
             ->where('project_assignments.completion_status', CompletionStatus::Pending->value)
             ->selectRaw(
-                'projects.id as project_id,
+                'project_assignments.id as assignment_id,
+                 projects.id as project_id,
                  projects.name as project_name,
                  project_assignments.task_description,
                  DATE(project_assignments.task_deadline) as task_deadline,
@@ -75,6 +76,7 @@ class EmployeeDashboardService
             ->get();
 
         return $results->map(fn ($row) => [
+            'assignment_id' => (int) $row->assignment_id,
             'project_id' => (int) $row->project_id,
             'project_name' => $row->project_name,
             'task_description' => $row->task_description,

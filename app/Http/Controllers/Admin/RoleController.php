@@ -22,9 +22,12 @@ class RoleController extends Controller
         $this->authorize('viewAny', Role::class);
 
         $roles = Role::withCount(['permissions', 'users'])->get();
+        $userRole = $request->user()->roles->first()?->name ?? 'employee';
 
         return Inertia::render('admin/roles/index', [
             'roles' => $roles,
+            'userRoleLevel' => RoleHierarchy::level($userRole),
+            'builtInRoles' => RoleHierarchy::BUILT_IN_ROLES,
         ]);
     }
 
