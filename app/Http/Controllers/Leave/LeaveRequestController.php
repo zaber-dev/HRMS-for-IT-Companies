@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Leave;
 
 use App\Http\Controllers\Controller;
 use App\Models\LeaveRequest;
+use App\Models\User;
 use App\Services\LeaveApprovalService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,6 +36,44 @@ class LeaveRequestController extends Controller
             'leaveRequests' => $leaveRequests,
             'filters' => $request->only('status'),
             'canCreate' => $request->user()->can('create', LeaveRequest::class),
+            'subjectUser' => $request->user()->only(['id', 'name', 'email']),
+            'isViewingSelf' => true,
+            'canViewDetails' => true,
+        ]);
+    }
+
+    /**
+     * Display another user's leave requests with optional status filter.
+     */
+    public function indexForUser(Request $request): Response
+    {
+        $this->authorize('viewOthers', LeaveRequest::class);
+
+        $validated = $request->validate([
+            'user' => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        $subjectUser = User::query()
+            ->select(['id', 'name', 'email'])
+            ->findOrFail($validated['user']);
+
+        $query = LeaveRequest::where('user_id', $subjectUser->id)
+            ->latest('submitted_at');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $leaveRequests = $query->paginate(15)->withQueryString();
+        $isViewingSelf = $request->user()->id === $subjectUser->id;
+
+        return Inertia::render('leave/index', [
+            'leaveRequests' => $leaveRequests,
+            'filters' => $request->only(['status', 'user']),
+            'canCreate' => $isViewingSelf && $request->user()->can('create', LeaveRequest::class),
+            'subjectUser' => $subjectUser,
+            'isViewingSelf' => $isViewingSelf,
+            'canViewDetails' => $isViewingSelf || $request->user()->hasRole(['admin', 'super_admin']),
         ]);
     }
 

@@ -326,6 +326,43 @@ describe('index', function () {
     });
 });
 
+describe('indexForUser', function () {
+    test('hr can access another user leave requests through user route', function () {
+        $hr = leaveUser('hr');
+        $employee = leaveUser('employee');
+
+        leaveRequest($employee, LeaveStatus::PendingHr);
+
+        $this->withoutVite()
+            ->actingAs($hr)
+            ->get(route('leave-requests.user', ['user' => $employee->id]))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('leave/index')
+                ->where('isViewingSelf', false)
+                ->where('subjectUser.id', $employee->id)
+                ->where('filters.user', (string) $employee->id)
+            );
+    });
+
+    test('employee receives 403 when accessing another user leave requests through user route', function () {
+        $employee = leaveUser('employee');
+        $otherEmployee = leaveUser('employee');
+
+        $this->actingAs($employee)
+            ->get(route('leave-requests.user', ['user' => $otherEmployee->id]))
+            ->assertForbidden();
+    });
+
+    test('user query parameter is required for user route', function () {
+        $admin = leaveUser('admin');
+
+        $this->actingAs($admin)
+            ->get(route('leave-requests.user'))
+            ->assertSessionHasErrors('user');
+    });
+});
+
 // ---------------------------------------------------------------------------
 // create
 // ---------------------------------------------------------------------------

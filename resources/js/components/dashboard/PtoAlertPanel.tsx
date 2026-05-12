@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { index as leaveIndex } from '@/actions/App/Http/Controllers/Leave/LeaveRequestController';
+import { indexForUser as leaveIndexForUser } from '@/actions/App/Http/Controllers/Leave/LeaveRequestController';
 import type { DashboardProps } from '@/types/dashboard';
 
 type Props = {
@@ -43,9 +43,9 @@ export function PtoAlertPanel({ alerts, threshold }: Props) {
                                 >
                                     <td className="px-4 py-2">
                                         <Link
-                                            href={leaveIndex.url({
+                                            href={leaveIndexForUser.url({
                                                 query: {
-                                                    user_id: alert.user_id,
+                                                    user: alert.user_id,
                                                 },
                                             })}
                                             className="font-medium hover:underline"

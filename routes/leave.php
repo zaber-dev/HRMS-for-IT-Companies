@@ -13,6 +13,7 @@ Route::prefix('leave-requests')
     ->group(function () {
         // Personal leave requests
         Route::get('/', [LeaveRequestController::class, 'index'])->name('index');
+        Route::get('/user', [LeaveRequestController::class, 'indexForUser'])->name('user');
         Route::get('/create', [LeaveRequestController::class, 'create'])->name('create');
         Route::post('/', [LeaveRequestController::class, 'store'])->name('store');
 

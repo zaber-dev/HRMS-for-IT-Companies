@@ -268,6 +268,20 @@ describe('viewAll()', function () {
     })->with(['hr', 'employee']);
 });
 
+describe('viewOthers()', function () {
+    it('returns true for hr, admin, and super_admin', function (string $role) {
+        $user = policyUser($role);
+
+        expect($this->policy->viewOthers($user))->toBeTrue();
+    })->with(['hr', 'admin', 'super_admin']);
+
+    it('returns false for employee', function () {
+        $employee = policyUser('employee');
+
+        expect($this->policy->viewOthers($employee))->toBeFalse();
+    });
+});
+
 // ---------------------------------------------------------------------------
 // viewApprovalQueue — Requirements 10.3–10.5
 // ---------------------------------------------------------------------------

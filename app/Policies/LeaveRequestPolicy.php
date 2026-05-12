@@ -83,6 +83,14 @@ class LeaveRequestPolicy
     }
 
     /**
+     * HR, Admin, and Super Admin may view another user's leave requests.
+     */
+    public function viewOthers(User $user): bool
+    {
+        return $user->hasRole(['hr', 'admin', 'super_admin']);
+    }
+
+    /**
      * HR, Admin, and Super Admin may access the approval queue.
      * Requirements 10.3–10.5
      */

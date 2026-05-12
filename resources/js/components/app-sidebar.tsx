@@ -81,11 +81,15 @@ export function AppSidebar() {
     ];
 
     const leaveNavItems: NavItem[] = [
-        {
-            title: 'My Leave Requests',
-            href: '/leave-requests',
-            icon: CalendarDays,
-        },
+        ...(role !== 'super_admin'
+            ? [
+                  {
+                      title: 'My Leave Requests',
+                      href: '/leave-requests',
+                      icon: CalendarDays,
+                  },
+              ]
+            : []),
         ...(isPrivileged
             ? [
                   {

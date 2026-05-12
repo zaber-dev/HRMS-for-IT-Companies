@@ -2,6 +2,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import {
     index as leaveIndex,
+    indexForUser as leaveIndexForUser,
     create,
     cancel,
 } from '@/actions/App/Http/Controllers/Leave/LeaveRequestController';
@@ -16,7 +17,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { formatDateRange, formatDateTime, formatRelative } from '@/lib/utils';
-import type { LeaveRequest, LeaveStatus, PaginatedData } from '@/types';
+import type { LeaveRequest, LeaveStatus, PaginatedData, User } from '@/types';
 
 const statusOptions = [
     { value: 'all', label: 'All statuses' },
@@ -55,37 +56,53 @@ function formatStatus(status: LeaveStatus): string {
 
 type Props = {
     leaveRequests: PaginatedData<LeaveRequest>;
-    filters: { status?: string };
+    filters: { status?: string; user?: number };
     canCreate: boolean;
+    subjectUser: Pick<User, 'id' | 'name' | 'email'>;
+    isViewingSelf: boolean;
+    canViewDetails: boolean;
 };
 
 export default function LeaveRequestIndex({
     leaveRequests,
     filters,
     canCreate,
+    subjectUser,
+    isViewingSelf,
+    canViewDetails,
 }: Props) {
     const [status, setStatus] = useState(filters.status ?? '');
+    const pageTitle = isViewingSelf ? 'My Leave Requests' : 'Leave Requests';
+    const pageDescription = isViewingSelf
+        ? 'View and manage your leave requests'
+        : `Viewing leave requests for ${subjectUser.name}`;
 
     function handleStatusChange(value: string) {
         // Treat 'all' as clearing the filter
         const newStatus = value === 'all' ? '' : value;
         setStatus(newStatus);
+        const route = isViewingSelf ? leaveIndex : leaveIndexForUser;
+        const query = {
+            status: newStatus || undefined,
+            user: isViewingSelf ? undefined : subjectUser.id,
+        };
+
         router.get(
-            leaveIndex.url(),
-            { status: newStatus || undefined },
+            route.url(),
+            query,
             { preserveState: true, replace: true },
         );
     }
 
     return (
         <>
-            <Head title="My Leave Requests" />
+            <Head title={pageTitle} />
 
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title="My Leave Requests"
-                        description="View and manage your leave requests"
+                        title={pageTitle}
+                        description={pageDescription}
                     />
                     {canCreate && (
                         <Button asChild>
@@ -175,20 +192,23 @@ export default function LeaveRequestIndex({
                                     </td>
                                     <td className="px-4 py-3 text-right">
                                         <div className="flex items-center justify-end gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                asChild
-                                            >
-                                                <Link
-                                                    href={`/leave-requests/${request.id}`}
+                                            {canViewDetails && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    asChild
                                                 >
-                                                    View
-                                                </Link>
-                                            </Button>
-                                            {!TERMINAL_STATUSES.includes(
-                                                request.status,
-                                            ) && (
+                                                    <Link
+                                                        href={`/leave-requests/${request.id}`}
+                                                    >
+                                                        View
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {isViewingSelf &&
+                                                !TERMINAL_STATUSES.includes(
+                                                    request.status,
+                                                ) && (
                                                 <Button
                                                     variant="destructive"
                                                     size="sm"
@@ -256,11 +276,13 @@ export default function LeaveRequestIndex({
     );
 }
 
-LeaveRequestIndex.layout = {
+LeaveRequestIndex.layout = ({ isViewingSelf, subjectUser }: Props) => ({
     breadcrumbs: [
         {
-            title: 'My Leave Requests',
-            href: leaveIndex.url(),
+            title: isViewingSelf ? 'My Leave Requests' : 'Leave Requests',
+            href: isViewingSelf
+                ? leaveIndex.url()
+                : leaveIndexForUser.url({ query: { user: subjectUser.id } }),
         },
     ],
-};
+});
